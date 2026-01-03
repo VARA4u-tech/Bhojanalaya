@@ -1,6 +1,8 @@
 import { Button } from '@/components/ui/button';
 import { AlertCircle, RefreshCw, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from "@/hooks/use-toast"; // Import useToast
+import { useEffect } from 'react'; // Import useEffect
 
 interface ErrorFallbackProps {
     error?: Error;
@@ -19,6 +21,17 @@ export function ErrorFallback({
 }: ErrorFallbackProps) {
     const navigate = useNavigate();
     const isDev = import.meta.env.DEV;
+    const { toast } = useToast(); // Initialize useToast
+
+    useEffect(() => {
+        if (error) {
+            toast({
+                title: title,
+                description: error.message || message, // Use error.message if available, otherwise fallback message
+                variant: "destructive", // Use a destructive variant for errors
+            });
+        }
+    }, [error, toast, title, message]); // Dependencies for useEffect
 
     const content = (
         <div className="flex flex-col items-center justify-center text-center space-y-6 p-8">

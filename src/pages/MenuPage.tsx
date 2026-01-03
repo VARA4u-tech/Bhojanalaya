@@ -10,6 +10,7 @@ import { MenuGridSkeleton } from "@/components/skeletons/MenuItemSkeleton";
 import { ErrorBoundary } from "@/components/error/ErrorBoundary";
 import { ErrorFallback } from "@/components/error/ErrorFallback";
 import { MenuItemCard } from "@/components/ui/menu-item-card";
+import { useToast } from "@/hooks/use-toast"; // Import useToast
 
 const categories = [
   { id: "all", name: "All" },
@@ -491,6 +492,7 @@ export default function MenuPage() {
   const { items: cart, addItem, updateQuantity: updateCartQuantity, getItemCount, getTotal } = useCartStore();
   const { selectedRestaurant } = useRestaurantStore();
   const { toggleCart } = useUIStore();
+  const { toast } = useToast(); // Initialize useToast
 
   // Mock dietary data for demo
   const getDiet = (id: number) => {
@@ -529,6 +531,10 @@ export default function MenuPage() {
       price: item.price,
       image: item.image,
       category: item.category,
+    });
+    toast({
+      title: "Added to cart",
+      description: `${item.name} has been added to your cart.`,
     });
   };
 
@@ -613,6 +619,7 @@ export default function MenuPage() {
                   "px-4 py-1.5 rounded-lg text-sm font-medium transition-all capitalize",
                   dietFilter === diet ? "bg-card shadow-sm text-primary" : "text-muted-foreground hover:text-foreground"
                 )}
+                aria-label={`Show ${diet} items`} // Added aria-label
               >
                 {diet}
               </button>
@@ -623,6 +630,7 @@ export default function MenuPage() {
             value={priceSort}
             onChange={(e) => setPriceSort(e.target.value as any)}
             className="h-10 px-4 rounded-xl border border-border bg-card text-sm focus:ring-primary focus:border-primary outline-none"
+            aria-label="Sort menu items by price" // Added aria-label
           >
             <option value="none">Sort by Price</option>
             <option value="low-high">Low to High</option>
@@ -643,6 +651,7 @@ export default function MenuPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full h-12 pl-12 pr-4 rounded-2xl border border-border bg-card/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:bg-card transition-all"
+              aria-label="Search dishes" // Added aria-label
             />
           </div>
 
@@ -658,6 +667,7 @@ export default function MenuPage() {
                     ? "bg-primary text-primary-foreground border-primary shadow-glow scale-105"
                     : "bg-card text-muted-foreground border-border/50 hover:border-primary/30 hover:text-foreground"
                 )}
+                aria-label={`Filter by ${category.name} category`} // Added aria-label
               >
                 {category.name}
               </button>
@@ -723,6 +733,7 @@ export default function MenuPage() {
             <Button
               className="w-full h-16 shadow-glow bg-primary hover:bg-primary/90 text-primary-foreground rounded-2xl flex items-center px-6 group"
               onClick={toggleCart}
+              aria-label={`View your cart with ${totalItems} items, total ${totalPrice.toFixed(2)} rupees`} // Added aria-label
             >
               <div className="relative mr-4 bg-white/20 p-2 rounded-xl group-hover:scale-110 transition-transform">
                 <ShoppingCart className="h-6 w-6" />
