@@ -10,36 +10,36 @@ interface AdminLayoutProps {
 export function AdminLayout({ children }: AdminLayoutProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
+
   return (
     <div className="min-h-screen bg-background">
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
-        <AdminSidebar 
-          collapsed={sidebarCollapsed} 
-          onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
+        <AdminSidebar
+          collapsed={sidebarCollapsed}
+          onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
         />
       </div>
-      
+
       {/* Mobile Sidebar Overlay */}
       {mobileMenuOpen && (
-        <div 
+        <div
           className="lg:hidden fixed inset-0 bg-foreground/20 backdrop-blur-sm z-40"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
-      
+
       {/* Mobile Sidebar */}
       <div className={cn(
         "lg:hidden fixed left-0 top-0 h-full z-50 transition-transform duration-300",
         mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
       )}>
-        <AdminSidebar 
-          collapsed={false} 
-          onToggle={() => setMobileMenuOpen(false)} 
+        <AdminSidebar
+          collapsed={false}
+          onToggle={() => setMobileMenuOpen(false)}
         />
       </div>
-      
+
       {/* Main Content */}
       <div className={cn(
         "transition-all duration-300",
@@ -54,9 +54,9 @@ export function AdminLayout({ children }: AdminLayoutProps) {
           >
             <Menu className="h-6 w-6" />
           </button>
-          <span className="font-heading font-bold text-primary">Admin Dashboard</span>
+          <span className="font-heading font-bold text-primary">Bhojanālaya Admin</span>
         </header>
-        
+
         <main className="p-4 lg:p-6">
           {children}
         </main>

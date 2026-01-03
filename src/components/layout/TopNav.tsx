@@ -1,8 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
-import { UtensilsCrossed, Menu, X } from "lucide-react";
+import { UtensilsCrossed, Menu, X, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useRestaurantStore } from "@/store";
+import { useUIStore } from "@/store/uiStore";
+import { RestaurantSelector } from "@/components/restaurant/RestaurantSelector";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -14,16 +17,19 @@ const navLinks = [
 export function TopNav() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
+  const [restaurantSelectorOpen, setRestaurantSelectorOpen] = useState(false);
+  const { selectedRestaurant } = useRestaurantStore();
+  const { toggleCart } = useUIStore();
+
   return (
     <header className="sticky top-0 z-50 w-full bg-card/95 backdrop-blur-md border-b border-border shadow-soft">
       <div className="container flex items-center justify-between h-16">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 font-heading text-xl font-bold text-primary">
           <UtensilsCrossed className="h-6 w-6" />
-          <span>DineEase</span>
+          <span>Bhojanālaya</span>
         </Link>
-        
+
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-1">
           {navLinks.map((link) => {
@@ -44,9 +50,20 @@ export function TopNav() {
             );
           })}
         </nav>
-        
+
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-3">
+          {/* Restaurant Switcher */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setRestaurantSelectorOpen(true)}
+            className="gap-2"
+          >
+            <Store className="h-4 w-4" />
+            <span className="text-sm font-medium">{selectedRestaurant?.name || 'Select Restaurant'}</span>
+          </Button>
+
           <Link to="/admin">
             <Button variant="ghost" size="sm">
               Admin
@@ -57,8 +74,11 @@ export function TopNav() {
               Book Now
             </Button>
           </Link>
+          <Button variant="outline" size="sm" onClick={toggleCart}>
+            Cart
+          </Button>
         </div>
-        
+
         {/* Mobile Menu Button */}
         <button
           className="md:hidden p-2 rounded-xl hover:bg-muted transition-colors"
@@ -68,7 +88,7 @@ export function TopNav() {
           {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
         </button>
       </div>
-      
+
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden absolute top-16 left-0 right-0 bg-card border-b border-border shadow-soft-lg animate-fade-in">
@@ -99,6 +119,12 @@ export function TopNav() {
           </nav>
         </div>
       )}
+
+      {/* Restaurant Selector Modal */}
+      <RestaurantSelector
+        open={restaurantSelectorOpen}
+        onOpenChange={setRestaurantSelectorOpen}
+      />
     </header>
   );
 }

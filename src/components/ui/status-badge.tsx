@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-type OrderStatus = "waiting" | "confirmed" | "preparing" | "ready" | "served" | "cancelled";
+type OrderStatus = "waiting" | "confirmed" | "preparing" | "ready" | "served" | "completed" | "cancelled";
 
 interface StatusBadgeProps {
   status: OrderStatus;
@@ -28,6 +28,10 @@ const statusConfig: Record<OrderStatus, { label: string; className: string }> = 
     label: "Served",
     className: "status-ready",
   },
+  completed: {
+    label: "Completed",
+    className: "status-ready",
+  },
   cancelled: {
     label: "Cancelled",
     className: "status-cancelled",
@@ -36,7 +40,7 @@ const statusConfig: Record<OrderStatus, { label: string; className: string }> = 
 
 export function StatusBadge({ status, className }: StatusBadgeProps) {
   const config = statusConfig[status];
-  
+
   return (
     <span className={cn("status-badge", config.className, className)}>
       {config.label}

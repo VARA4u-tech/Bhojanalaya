@@ -1,8 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
-import { 
-  LayoutDashboard, 
-  ClipboardList, 
-  UtensilsCrossed, 
+import {
+  LayoutDashboard,
+  ClipboardList,
+  UtensilsCrossed,
   TableProperties,
   BarChart3,
   LogOut,
@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { useAdminStore } from "@/store/adminStore";
 
 const sidebarItems = [
   { href: "/admin", icon: LayoutDashboard, label: "Dashboard" },
@@ -26,10 +27,10 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
   const location = useLocation();
-  
+
   return (
     <aside className={cn(
-      "fixed left-0 top-0 h-full bg-card border-r border-border shadow-soft transition-all duration-300 z-50",
+      "fixed left-0 top-0 h-full bg-card/70 backdrop-blur-md border-r border-border shadow-soft transition-all duration-300 z-50",
       collapsed ? "w-16" : "w-64"
     )}>
       {/* Header */}
@@ -37,7 +38,7 @@ export function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
         {!collapsed && (
           <Link to="/admin" className="flex items-center gap-2 font-heading text-lg font-bold text-primary">
             <UtensilsCrossed className="h-5 w-5" />
-            <span>DineEase</span>
+            <span>Bhojanālaya</span>
           </Link>
         )}
         <button
@@ -54,7 +55,7 @@ export function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
           )} />
         </button>
       </div>
-      
+
       {/* Navigation */}
       <nav className="flex flex-col gap-1 p-3">
         {sidebarItems.map((item) => {
@@ -78,21 +79,19 @@ export function AdminSidebar({ collapsed, onToggle }: AdminSidebarProps) {
           );
         })}
       </nav>
-      
-      {/* Footer */}
-      <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-border">
-        <Link to="/">
-          <Button 
-            variant="ghost" 
-            className={cn(
-              "w-full justify-start gap-3",
-              collapsed && "justify-center px-0"
-            )}
-          >
-            <LogOut className="h-5 w-5" />
-            {!collapsed && <span>Exit Admin</span>}
-          </Button>
-        </Link>
+
+      {/* Footer / Logout */}
+      <div className="p-4 border-t border-border">
+        <button
+          onClick={() => useAdminStore.getState().logout()}
+          className={cn(
+            "flex items-center gap-3 w-full p-3 rounded-xl text-destructive hover:bg-destructive/10 transition-all",
+            collapsed ? "justify-center" : "px-4"
+          )}
+        >
+          <LogOut className="h-5 w-5" />
+          {!collapsed && <span className="font-medium">Logout</span>}
+        </button>
       </div>
     </aside>
   );
