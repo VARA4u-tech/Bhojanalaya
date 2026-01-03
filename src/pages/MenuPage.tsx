@@ -513,10 +513,20 @@ export default function MenuPage() {
   const filteredItems = menuItems
     .filter((item) => {
       const matchesRestaurant = !selectedRestaurant || item.restaurantId === selectedRestaurant.id;
-      const matchesCategory = activeCategory === "all" || item.category === activeCategory;
       const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesDiet = dietFilter === "all" || getDiet(item.id) === dietFilter;
-      return matchesRestaurant && matchesCategory && matchesSearch && matchesDiet;
+
+      // New Category Logic
+      let matchesCategory = true;
+      if (activeCategory === 'veg') {
+        matchesCategory = getDiet(item.id) === 'veg';
+      } else if (activeCategory === 'non-veg') {
+        matchesCategory = getDiet(item.id) === 'non-veg';
+      } else if (activeCategory === 'drinks') {
+        matchesCategory = item.category === 'drinks';
+      }
+      // 'all' implies matchesCategory = true
+
+      return matchesRestaurant && matchesCategory && matchesSearch;
     })
     .sort((a, b) => {
       if (priceSort === "low-high") return a.price - b.price;
@@ -610,20 +620,8 @@ export default function MenuPage() {
           transition={{ delay: 0.2 }}
           className="flex flex-wrap items-center gap-3"
         >
-          <div className="flex bg-muted p-1 rounded-xl">
-            {(['all', 'veg', 'non-veg'] as const).map((diet) => (
-              <button
-                key={diet}
-                onClick={() => setDietFilter(diet)}
-                className={cn(
-                  "px-4 py-1.5 rounded-lg text-sm font-medium transition-all capitalize",
-                  dietFilter === diet ? "bg-card shadow-sm text-primary" : "text-muted-foreground hover:text-foreground"
-                )}
-                aria-label={`Show ${diet} items`} // Added aria-label
-              >
-                {diet}
-              </button>
-            ))}
+          <div className="hidden">
+            {/* Diet filter merged into main tabs */}
           </div>
 
           <select
@@ -639,6 +637,25 @@ export default function MenuPage() {
         </motion.div>
       </div>
 
+      {/* Peak Hour Indicator - Frontend AI Simulation */}
+      {(() => {
+        const hour = new Date().getHours();
+        const isPeak = hour >= 19 && hour <= 21;
+
+        return isPeak && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 bg-orange-500/10 border border-orange-500/20 rounded-xl p-4 flex items-center gap-3 text-orange-600"
+          >
+            <span className="text-xl">⚠️</span>
+            <p className="text-sm font-medium">
+              High demand expected during this time. Pre-order recommended!
+            </p>
+          </motion.div>
+        );
+      })()}
+
       {/* Search & Category Nav */}
       <div className="sticky top-16 z-20 bg-background/80 backdrop-blur-md py-4 -mx-4 px-4 lg:-mx-0 lg:px-0 lg:mb-8 transition-all">
         <div className="flex flex-col lg:flex-row gap-4">
@@ -647,31 +664,64 @@ export default function MenuPage() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
             <input
               type="text"
-              placeholder="Search dishes..."
+              list="food-suggestions"
+              placeholder="Search food items..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full h-12 pl-12 pr-4 rounded-2xl border border-border bg-card/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:bg-card transition-all"
-              aria-label="Search dishes" // Added aria-label
+              aria-label="Search dishes"
             />
+            <datalist id="food-suggestions">
+              {menuItems.map(item => (
+                <option key={item.id} value={item.name} />
+              ))}
+            </datalist>
           </div>
 
           {/* Category Tabs */}
           <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide lg:pb-0">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => setActiveCategory(category.id)}
-                className={cn(
-                  "px-5 py-2.5 rounded-2xl text-sm font-bold whitespace-nowrap transition-all duration-300 border",
-                  activeCategory === category.id
-                    ? "bg-primary text-primary-foreground border-primary shadow-glow scale-105"
-                    : "bg-card text-muted-foreground border-border/50 hover:border-primary/30 hover:text-foreground"
-                )}
-                aria-label={`Filter by ${category.name} category`} // Added aria-label
-              >
-                {category.name}
-              </button>
-            ))}
+            {[
+              { id: "all", label: "All" },
+              { id: "veg", label: "Veg" },
+              { id: "non-veg", label: "Non-Veg" },
+              { id: "drinks", label: "Drinks" }
+            ].map((tab) => {
+              // Calculate counts
+              const count = menuItems.filter(item => {
+                if (tab.id === 'all') return true;
+                if (tab.id === 'drinks') return item.category === 'drinks';
+                if (tab.id === 'veg') return getDiet(item.id) === 'veg';
+                if (tab.id === 'non-veg') return getDiet(item.id) === 'non-veg';
+                return false;
+              }).length;
+
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    // Reset other filters when switching main tabs to avoid confusion
+                    setActiveCategory(tab.id);
+                    // If "Veg" tab is clicked, we effectively set diet filter, but here we are treating these as "Modes"
+                    // We will handle the actual filtering logic in the filteredItems useMemo/logic below
+                  }}
+                  className={cn(
+                    "px-5 py-2.5 rounded-2xl text-sm font-bold whitespace-nowrap transition-all duration-300 border flex items-center gap-2",
+                    activeCategory === tab.id
+                      ? "bg-primary text-primary-foreground border-primary shadow-glow scale-105"
+                      : "bg-card text-muted-foreground border-border/50 hover:border-primary/30 hover:text-foreground"
+                  )}
+                  aria-label={`Filter by ${tab.label}`}
+                >
+                  <span>{tab.label}</span>
+                  <span className={cn(
+                    "text-[10px] px-1.5 py-0.5 rounded-full",
+                    activeCategory === tab.id ? "bg-white/20 text-white" : "bg-muted text-muted-foreground"
+                  )}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </div>

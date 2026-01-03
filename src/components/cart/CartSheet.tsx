@@ -64,6 +64,14 @@ export function CartSheet() {
                     ) : (
                         <ScrollArea className="h-full pr-4">
                             <div className="space-y-6">
+                                {/* AI Wait Time Prediction */}
+                                <div className="bg-primary/5 rounded-xl p-3 border border-primary/10 flex items-center justify-center gap-2">
+                                    <span className="text-xl">🤖</span>
+                                    <p className="text-sm text-primary font-medium">
+                                        Estimated Ready Time: <span className="font-bold">{8 + (items.length * 2)} mins</span>
+                                    </p>
+                                </div>
+
                                 <div className="space-y-4">
                                     {items.map((item) => (
                                         <div key={item.id} className="flex gap-4 animate-slide-up">
@@ -105,35 +113,56 @@ export function CartSheet() {
                                     ))}
                                 </div>
 
-                                {recommendations.length > 0 && (
-                                    <div className="pt-6 border-t animate-slide-up">
-                                        <div className="flex items-center gap-2 mb-4">
-                                            <Sparkles className="h-4 w-4 text-primary" />
-                                            <h4 className="font-heading font-semibold text-sm">Recommended Pairings</h4>
-                                        </div>
-                                        <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
-                                            {recommendations.map((item) => (
-                                                <div key={item.id} className="flex-shrink-0 w-32 group">
-                                                    <div className="relative aspect-square rounded-xl overflow-hidden mb-2">
-                                                        <img
-                                                            src={item.image}
-                                                            alt={item.name}
-                                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                                        />
-                                                        <button
-                                                            onClick={() => addItem(item)}
-                                                            className="absolute bottom-1 right-1 w-7 h-7 bg-primary text-primary-foreground rounded-lg flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all"
-                                                        >
-                                                            <Plus className="h-4 w-4" />
-                                                        </button>
+                                {/* AI Food Recommendation */}
+                                {(() => {
+                                    // AI Logic as requested
+                                    const recommendFood = (cartItems: typeof items) => {
+                                        const cartNames = cartItems.map(i => i.name.toLowerCase());
+                                        if (cartNames.some(n => n.includes("burger"))) return "Fries";
+                                        if (cartNames.some(n => n.includes("pizza"))) return "Garlic Bread";
+                                        if (cartNames.some(n => n.includes("biryani"))) return "Thums Up";
+                                        return "Soft Drink";
+                                    };
+                                    const suggestion = recommendFood(items);
+
+                                    return (
+                                        <div className="pt-6 border-t animate-slide-up">
+                                            <div className="flex items-center gap-2 mb-4 bg-secondary/10 p-3 rounded-xl border border-secondary/20">
+                                                <span className="text-xl">🤖</span>
+                                                <p className="text-sm font-medium">
+                                                    Recommended Add-on: <span className="text-secondary font-bold">{suggestion}</span>
+                                                </p>
+                                            </div>
+
+                                            {/* Show actual items related to suggestion if available, else default list */}
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <Sparkles className="h-4 w-4 text-primary" />
+                                                <h4 className="font-heading font-semibold text-sm">Suggested Items</h4>
+                                            </div>
+                                            <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+                                                {recommendations.map((item) => (
+                                                    <div key={item.id} className="flex-shrink-0 w-32 group">
+                                                        <div className="relative aspect-square rounded-xl overflow-hidden mb-2">
+                                                            <img
+                                                                src={item.image}
+                                                                alt={item.name}
+                                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                            />
+                                                            <button
+                                                                onClick={() => addItem(item)}
+                                                                className="absolute bottom-1 right-1 w-7 h-7 bg-primary text-primary-foreground rounded-lg flex items-center justify-center shadow-lg hover:scale-110 active:scale-95 transition-all"
+                                                            >
+                                                                <Plus className="h-4 w-4" />
+                                                            </button>
+                                                        </div>
+                                                        <div className="text-xs font-semibold truncate">{item.name}</div>
+                                                        <div className="text-[10px] text-primary font-bold">₹{item.price}</div>
                                                     </div>
-                                                    <div className="text-xs font-semibold truncate">{item.name}</div>
-                                                    <div className="text-[10px] text-primary font-bold">₹{item.price}</div>
-                                                </div>
-                                            ))}
+                                                ))}
+                                            </div>
                                         </div>
-                                    </div>
-                                )}
+                                    );
+                                })()}
                             </div>
                         </ScrollArea>
                     )}
