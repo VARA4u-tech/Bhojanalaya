@@ -95,7 +95,7 @@ export default function OrderStatusPage() {
     if (success) {
       toast({
         title: "Order Cancelled",
-        description: `Refund of $${(displayOrder.total * 0.5).toFixed(2)} will be processed within 3-5 business days.`,
+        description: `Refund of ₹${(displayOrder.total * 0.5).toFixed(2)} will be processed within 3-5 business days.`,
       });
       setCancelDialogOpen(false);
     } else {
@@ -325,7 +325,7 @@ export default function OrderStatusPage() {
                         </div>
                         <div className="font-medium text-lg">{item.name}</div>
                       </div>
-                      <span className="font-bold text-lg">${(item.price * item.quantity).toFixed(2)}</span>
+                      <span className="font-bold text-lg">₹{(item.price * item.quantity).toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
@@ -333,7 +333,7 @@ export default function OrderStatusPage() {
                 <div className="border-t border-border pt-6 mt-6">
                   <div className="flex items-center justify-between">
                     <span className="font-heading font-bold text-xl">Grand Total</span>
-                    <span className="font-heading font-bold text-2xl text-primary">${total.toFixed(2)}</span>
+                    <span className="font-heading font-bold text-2xl text-primary">₹{total.toFixed(2)}</span>
                   </div>
                 </div>
               </motion.div>
