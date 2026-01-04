@@ -157,10 +157,13 @@ export function FloatingFoodHero({
                     transition={{ duration: 0.8, ease: "easeOut" }}
                     className="max-w-4xl mx-auto"
                 >
-                    <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl md:text-8xl leading-[1.1] mb-8 font-heading">
-                        {title.split('. ').map((part, i) => (
-                            <span key={i} className="block last:text-primary">
-                                {part}{i === 0 ? '.' : ''}
+                    <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl md:text-7xl lg:text-8xl leading-[1.2] mb-8 font-heading">
+                        {title.split('|').map((part, i) => (
+                            <span key={i} className={cn(
+                                "block",
+                                i === title.split('|').length - 1 ? "text-primary italic sm:not-italic" : ""
+                            )}>
+                                {part.trim()}
                             </span>
                         ))}
                     </h1>

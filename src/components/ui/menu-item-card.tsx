@@ -98,7 +98,7 @@ const MenuItemCard = React.forwardRef<HTMLDivElement, MenuItemCardProps>(
                             }}
                             variants={buttonVariants}
                             whileTap="tap"
-                            className="px-8 py-2 text-sm font-bold uppercase transition-all duration-300 transform translate-y-4 border rounded-lg shadow-lg opacity-0 bg-background/80 text-foreground backdrop-blur-sm border-border/50 group-hover:opacity-100 group-hover:translate-y-0 hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                            className="px-8 py-2 text-sm font-bold uppercase transition-all duration-300 transform border rounded-lg shadow-lg bg-background/80 text-foreground backdrop-blur-sm border-border/50 md:translate-y-4 md:opacity-0 group-hover:opacity-100 group-hover:translate-y-0 hover:bg-primary hover:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                             aria-label={`Add ${name} to cart`}
                         >
                             Add

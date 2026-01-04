@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation, Outlet } from "react-router-dom";
 import { ErrorBoundary } from "@/components/error/ErrorBoundary";
 import { ErrorFallback } from "@/components/error/ErrorFallback";
@@ -10,12 +11,7 @@ import MenuPage from "./pages/MenuPage";
 import BookingPage from "./pages/BookingPage";
 import OrderStatusPage from "./pages/OrderStatusPage";
 import ProfilePage from "./pages/ProfilePage";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminOrdersPage from "./pages/admin/AdminOrdersPage";
-import AdminMenuPage from "./pages/admin/AdminMenuPage";
-import AdminTablesPage from "./pages/admin/AdminTablesPage";
 import NotFound from "./pages/NotFound";
-import { AdminGuard } from "./components/admin/AdminGuard";
 import MenuItemDemo from "./pages/demo/MenuItemDemo";
 
 import { CustomerLayout } from "@/components/layout/CustomerLayout";
@@ -26,6 +22,11 @@ const queryClient = new QueryClient();
 
 const AppRoutes = () => {
   const location = useLocation();
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [location.pathname]);
 
   return (
     <AnimatePresence mode="wait" initial={false}>
@@ -39,13 +40,6 @@ const AppRoutes = () => {
           <Route path="/profile" element={<PageTransition><ProfilePage /></PageTransition>} />
           <Route path="/demo/menu-item" element={<PageTransition><MenuItemDemo /></PageTransition>} />
         </Route>
-
-        {/* Admin Routes */}
-        {/* Note: AdminGuard already wraps the component, so PageTransition is inside it. */}
-        <Route path="/admin" element={<AdminGuard><PageTransition><AdminDashboard /></PageTransition></AdminGuard>} />
-        <Route path="/admin/orders" element={<AdminGuard><PageTransition><AdminOrdersPage /></PageTransition></AdminGuard>} />
-        <Route path="/admin/menu" element={<AdminGuard><PageTransition><AdminMenuPage /></PageTransition></AdminGuard>} />
-        <Route path="/admin/tables" element={<AdminGuard><PageTransition><AdminTablesPage /></PageTransition></AdminGuard>} />
 
         {/* Catch-all */}
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
@@ -69,4 +63,3 @@ const App = () => (
 );
 
 export default App;
-

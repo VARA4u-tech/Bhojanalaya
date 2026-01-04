@@ -51,6 +51,11 @@ export default function OrderStatusPage() {
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  // Scroll to top on mount to prevent glitchy transitions
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
   // Simulate loading
   useEffect(() => {
     const timer = setTimeout(() => {
