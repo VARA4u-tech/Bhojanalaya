@@ -65,9 +65,19 @@ export function FloatingFoodHero({
 }: FloatingFoodHeroProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+    const [reducedMotion, setReducedMotion] = useState(false);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        setReducedMotion(mediaQuery.matches);
+
+        const handler = () => setReducedMotion(mediaQuery.matches);
+        mediaQuery.addEventListener('change', handler);
+        return () => mediaQuery.removeEventListener('change', handler);
+    }, []);
 
     const handleMouseMove = (e: React.MouseEvent) => {
-        if (!containerRef.current) return;
+        if (!containerRef.current || reducedMotion) return;
         const { left, top, width, height } = containerRef.current.getBoundingClientRect();
         const x = (e.clientX - left) / width - 0.5;
         const y = (e.clientY - top) / height - 0.5;
@@ -100,7 +110,7 @@ export function FloatingFoodHero({
                             <motion.div
                                 key={`${image.src}-${index}`}
                                 initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
-                                animate={{
+                                animate={!reducedMotion ? {
                                     opacity: 1,
                                     scale: 1,
                                     rotate: 0,
@@ -108,8 +118,8 @@ export function FloatingFoodHero({
                                     x: [0, 5, 0],
                                     translateX: mouseX.get() * moveX,
                                     translateY: mouseY.get() * moveY,
-                                }}
-                                transition={{
+                                } : { opacity: 1, scale: 1, rotate: 0 }}
+                                transition={!reducedMotion ? {
                                     opacity: { duration: 1, delay: index * 0.15 },
                                     scale: { duration: 1, delay: index * 0.15 },
                                     rotate: { duration: 1, delay: index * 0.15 },
@@ -123,7 +133,7 @@ export function FloatingFoodHero({
                                         repeat: Infinity,
                                         ease: "easeInOut"
                                     }
-                                }}
+                                } : { opacity: { duration: 0 }, scale: { duration: 0 }, rotate: { duration: 0 } }}
                                 className={cn('absolute', image.className.replace('animate-float', ''))}
                             >
                                 <div className="relative group">

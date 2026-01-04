@@ -5,6 +5,7 @@ import { CustomerLayout } from "@/components/layout/CustomerLayout";
 import { Clock, UtensilsCrossed, Users, ArrowRight, Sparkles, Calendar, Bell } from "lucide-react";
 import { FloatingFoodHero } from "@/components/ui/hero-section-7";
 import { MenuItemCard } from "@/components/ui/menu-item-card";
+import { popularItems } from "@/data/popular-items";
 
 const features = [
   {
@@ -24,30 +25,6 @@ const features = [
   },
 ];
 
-const popularItems = [
-  {
-    id: 1,
-    name: "Rayalaseema Mutton Biryani",
-    price: 380,
-    image: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400&h=300&fit=crop",
-    available: true,
-  },
-  {
-    id: 4,
-    name: "Special Babai Idli",
-    price: 80,
-    image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=400&h=300&fit=crop",
-    available: true,
-  },
-  {
-    id: 102,
-    name: "Ulavacharu Biryani",
-    price: 320,
-    image: "https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?w=400&h=300&fit=crop",
-    available: true,
-  },
-];
-
 export default function HomePage() {
   return (
     <>
@@ -57,27 +34,27 @@ export default function HomePage() {
         description="From Babai Hotel's idlis to Southern Spice's biryanis, explore Vijayawada's finest dining. Better food for more people, delivered right to your soul."
         images={[
           {
-            src: 'https://b.zmtcdn.com/data/o2_assets/110a09a9d81f0e5305041c1b507d0f391743058910.png',
+            src: '/images/hero/burger.png',
             alt: 'Burger',
             className: 'w-40 sm:w-56 md:w-64 top-[10%] left-[5%] md:left-[10%]',
           },
           {
-            src: 'https://b.zmtcdn.com/data/o2_assets/b4f62434088b0ddfa9b370991f58ca601743060218.png',
+            src: '/images/hero/dumplings.png',
             alt: 'Dumplings',
             className: 'w-32 sm:w-48 md:w-56 top-[15%] right-[5%] md:right-[12%]',
           },
           {
-            src: 'https://b.zmtcdn.com/data/o2_assets/316495f4ba2a9c9d9aa97fed9fe61cf71743059024.png',
+            src: '/images/hero/pizza-slice.png',
             alt: 'Pizza slice',
             className: 'w-48 sm:w-64 md:w-72 bottom-[10%] right-[8%] md:right-[15%]',
           },
           {
-            src: 'https://b.zmtcdn.com/data/o2_assets/70b50e1a48a82437bfa2bed925b862701742892555.png', // Working Basil
+            src: '/images/hero/basil-leaf.png',
             alt: 'Basil leaf',
             className: 'w-12 md:w-16 top-[40%] left-[20%]',
           },
           {
-            src: 'https://b.zmtcdn.com/data/o2_assets/9ef1cc6ecf1d92798507ffad71e9492d1742892584.png', // Working Tomato
+            src: '/images/hero/tomato-slice.png',
             alt: 'Tomato slice',
             className: 'w-10 md:w-14 top-[60%] right-[25%]',
           },
