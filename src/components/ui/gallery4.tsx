@@ -127,7 +127,7 @@ const Gallery4 = ({
                                         <img
                                             src={item.image}
                                             alt={item.title}
-                                            fetchPriority="high"
+                                            fetchpriority="high"
                                             loading="eager"
                                             className="absolute h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-110"
                                             onError={(e) => {
