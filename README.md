@@ -10,7 +10,10 @@ bitebook-direct/
 │   ├── src/          # React components, pages, and logic
 │   ├── public/       # Static assets
 │   └── ...           # Frontend configs and dependencies
-├── backend/          # (Coming soon) Node.js/Express backend
+├── backend/          # Express.js + TypeScript backend API
+│   ├── src/          # API routes, controllers, middleware
+│   ├── database-schema.sql  # Supabase database schema
+│   └── ...           # Backend configs and dependencies
 └── README.md         # This file
 ```
 
@@ -26,11 +29,32 @@ npm run dev
 
 The application will be available at `http://localhost:8080`
 
+### Backend Development
+
+```bash
+cd backend
+npm install
+
+# Setup environment variables
+cp .env.example .env
+# Edit .env with your Supabase credentials
+
+npm run dev
+```
+
+The API will be available at `http://localhost:3000`
+
 ### Build for Production
 
 ```bash
+# Frontend
 cd frontend
 npm run build
+
+# Backend
+cd backend
+npm run build
+npm start
 ```
 
 ## ✨ Features
@@ -53,6 +77,14 @@ npm run build
 - **Zustand** - State management
 - **React Router** - Navigation
 - **Radix UI** - Accessible components
+
+### Backend
+- **Node.js** - Runtime
+- **Express.js** - Web framework
+- **TypeScript** - Type safety
+- **Supabase** - Database, Auth, Storage
+- **Zod** - Validation
+- **JWT** - Authentication tokens
 
 ## 📱 Key Pages
 
