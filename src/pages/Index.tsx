@@ -5,7 +5,7 @@ import { CustomerLayout } from "@/components/layout/CustomerLayout";
 import { Clock, UtensilsCrossed, Users, ArrowRight, Sparkles, Calendar, Bell } from "lucide-react";
 import { FloatingFoodHero } from "@/components/ui/hero-section-7";
 import { MenuItemCard } from "@/components/ui/menu-item-card";
-import { RestaurantShowcase } from "@/components/restaurant/RestaurantShowcase";
+import { PopularDishesShowcase } from "@/components/menu/PopularDishesShowcase";
 
 const features = [
   {
@@ -121,9 +121,9 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Restaurant Showcase Section */}
+      {/* Popular Dishes Showcase Section */}
       <div className="relative">
-        <RestaurantShowcase />
+        <PopularDishesShowcase />
         {/* Decorative corner accents */}
         <div className="absolute top-0 left-0 w-32 h-32 bg-primary/5 rounded-full -translate-x-1/2 -translate-y-1/2 blur-2xl" />
         <div className="absolute bottom-0 right-0 w-32 h-32 bg-secondary/5 rounded-full translate-x-1/2 translate-y-1/2 blur-2xl" />
