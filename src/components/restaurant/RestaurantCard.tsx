@@ -23,7 +23,8 @@ export function RestaurantCard({ restaurant, isSelected, onClick }: RestaurantCa
                     src={restaurant.image}
                     alt={restaurant.name}
                     loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                    style={{ imageRendering: 'auto' }}
                     onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80"; // Fallback

@@ -51,6 +51,11 @@ export const PopularDishesShowcase = ({
     className?: string;
 }) => {
     const [active, setActive] = useState(0);
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+    // Minimum swipe distance threshold (in px)
+    const minSwipeDistance = 50;
 
     const handleNext = () => {
         setActive((prev) => (prev + 1) % popularDishes.length);
@@ -62,6 +67,29 @@ export const PopularDishesShowcase = ({
 
     const isActive = (index: number) => {
         return index === active;
+    };
+
+    const onTouchStart = (e: React.TouchEvent) => {
+        setTouchEnd(null);
+        setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const onTouchMove = (e: React.TouchEvent) => {
+        setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const onTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+        
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > minSwipeDistance;
+        const isRightSwipe = distance < -minSwipeDistance;
+
+        if (isLeftSwipe) {
+            handleNext();
+        } else if (isRightSwipe) {
+            handlePrev();
+        }
     };
 
     useEffect(() => {
@@ -97,7 +125,12 @@ export const PopularDishesShowcase = ({
                 <div className={cn("max-w-sm md:max-w-4xl mx-auto px-4 md:px-8 lg:px-12 py-12 border border-primary/10 rounded-[3rem] bg-background/50 backdrop-blur-sm shadow-xl", className)}>
                     <div className="relative grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
                         <div>
-                            <div className="relative h-80 w-full">
+                            <div 
+                                className="relative h-80 w-full touch-pan-y"
+                                onTouchStart={onTouchStart}
+                                onTouchMove={onTouchMove}
+                                onTouchEnd={onTouchEnd}
+                            >
                                 <AnimatePresence mode="popLayout">
                                     {popularDishes.map((dish, index) => (
                                         <motion.div
