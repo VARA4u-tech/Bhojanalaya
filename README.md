@@ -1,73 +1,93 @@
-# Welcome to your Lovable project
+# Bhojanālaya - Restaurant Ordering Platform
 
-## Project info
+A modern, full-stack restaurant ordering and table booking platform built for Vijayawada's finest dining establishments.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## 🏗️ Project Structure
 
-## How can I edit this code?
+```
+bitebook-direct/
+├── frontend/          # React + Vite frontend application
+│   ├── src/          # React components, pages, and logic
+│   ├── public/       # Static assets
+│   └── ...           # Frontend configs and dependencies
+├── backend/          # (Coming soon) Node.js/Express backend
+└── README.md         # This file
+```
 
-There are several ways of editing your application.
+## 🚀 Getting Started
 
-**Use Lovable**
+### Frontend Development
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
+cd frontend
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The application will be available at `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Build for Production
 
-**Use GitHub Codespaces**
+```bash
+cd frontend
+npm run build
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## ✨ Features
 
-## What technologies are used for this project?
+- **Multi-Restaurant Support**: Browse and order from multiple restaurants
+- **Real-Time Order Tracking**: Track your order status in real-time
+- **Table Booking**: Reserve tables in advance
+- **Smart Menu Filtering**: Filter by cuisine, dietary preferences, and more
+- **Responsive Design**: Optimized for mobile, tablet, and desktop
+- **Premium UI/UX**: Glassmorphism design with smooth animations
 
-This project is built with:
+## 🛠️ Tech Stack
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Frontend
+- **React 18** - UI library
+- **TypeScript** - Type safety
+- **Vite** - Build tool
+- **Tailwind CSS** - Styling
+- **Framer Motion** - Animations
+- **Zustand** - State management
+- **React Router** - Navigation
+- **Radix UI** - Accessible components
 
-## How can I deploy this project?
+## 📱 Key Pages
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+- **Home** - Hero section with restaurant showcase
+- **Menu** - Browse dishes with advanced filtering
+- **Orders** - Track order status and history
+- **Booking** - Reserve tables
+- **Profile** - User account management
 
-## Can I connect a custom domain to my Lovable project?
+## 🎨 Design Highlights
 
-Yes, you can!
+- Iconic lotus branding
+- Mobile-optimized responsive layouts
+- Tactile touch interactions
+- Smooth page transitions
+- Premium glassmorphism aesthetic
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 👨‍💻 Development
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+This project was developed with a focus on:
+- SEO-friendly semantic HTML
+- Accessibility (WCAG compliance)
+- Performance optimization
+- Mobile-first responsive design
+- Clean, maintainable code architecture
+
+## 📄 License
+
+MIT License - feel free to use this project for learning or commercial purposes.
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+---
+
+**Developed by**: VARA4u-tech  
+**Repository**: [github.com/VARA4u-tech/bitebook-direct](https://github.com/VARA4u-tech/bitebook-direct)
