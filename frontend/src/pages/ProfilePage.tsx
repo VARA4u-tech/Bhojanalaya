@@ -24,8 +24,11 @@ import { useOrderStore, useBookingStore, useCartStore } from "@/store";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useUserStore } from "@/store/userStore";
+import { LoginView } from "@/components/auth/LoginView";
 
 export default function ProfilePage() {
+  const { user, isAuthenticated, logout } = useUserStore();
   const { orders } = useOrderStore();
   const { bookings } = useBookingStore();
   const { addBulkItems } = useCartStore();
@@ -56,6 +59,19 @@ export default function ProfilePage() {
     visible: { opacity: 1, y: 0 }
   };
 
+  if (!isAuthenticated) {
+    return (
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+        className="container py-20 flex items-center justify-center min-h-[60vh]"
+      >
+        <LoginView />
+      </motion.div>
+    );
+  }
+
   return (
     <motion.div
       initial="hidden"
@@ -69,20 +85,26 @@ export default function ProfilePage() {
 
         <div className="flex flex-col sm:flex-row items-center sm:items-center gap-6 relative z-10 text-center sm:text-left">
           <div className="w-24 h-24 rounded-3xl bg-primary/10 border border-primary/20 flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-transform">
-            <User className="h-12 w-12 text-primary" />
+            {user?.avatar ? (
+              <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+            ) : (
+              <User className="h-12 w-12 text-primary" />
+            )}
             <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
           <div className="flex-1">
-            <h1 className="font-heading text-h1 mb-2">Vara Prasad</h1>
+            <h1 className="font-heading text-h1 mb-2">{user?.name || 'User'}</h1>
             <div className="flex flex-wrap justify-center sm:justify-start gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-2 px-3 py-1 bg-muted/50 rounded-full">
                 <Mail className="h-4 w-4" />
-                vara.tech@example.com
+                {user?.email}
               </span>
-              <span className="flex items-center gap-2 px-3 py-1 bg-muted/50 rounded-full">
-                <Phone className="h-4 w-4" />
-                +91 98765 43210
-              </span>
+              {user?.phone && (
+                <span className="flex items-center gap-2 px-3 py-1 bg-muted/50 rounded-full">
+                  <Phone className="h-4 w-4" />
+                  {user.phone}
+                </span>
+              )}
             </div>
           </div>
           <Button variant="outline" className="rounded-xl border-border/50 hover:bg-muted/50">
@@ -288,6 +310,7 @@ export default function ProfilePage() {
       <motion.div variants={itemVariants} className="mt-12 text-center pb-10">
         <Button
           variant="outline"
+          onClick={() => logout()}
           className="rounded-2xl h-12 px-8 text-destructive border-destructive/30 hover:bg-destructive hover:text-white transition-all shadow-sm hover:shadow-glow-destructive"
         >
           <LogOut className="h-5 w-5 mr-2" />

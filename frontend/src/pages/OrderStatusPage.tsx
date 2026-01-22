@@ -13,6 +13,7 @@ import { ErrorFallback } from "@/components/error/ErrorFallback";
 import { CancelOrderDialog } from "@/components/order/CancelOrderDialog";
 import { useToast } from "@/hooks/use-toast";
 import { EmptyState } from "@/components/ui/empty-state";
+import { useSocket } from "@/context/SocketContext";
 
 const orderSteps: { status: OrderStatus; label: string; icon: React.ElementType }[] = [
   { status: "waiting", label: "Order Placed", icon: Clock },
@@ -64,12 +65,37 @@ export default function OrderStatusPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Set active order if we have orders but no active one
+  // Join order room and listen for updates
+  const { socket } = useSocket();
+
   useEffect(() => {
     if (orders.length > 0 && !activeOrder) {
       setActiveOrder(orders[0].id);
     }
   }, [orders, activeOrder, setActiveOrder]);
+
+  useEffect(() => {
+    if (socket && displayOrder?.id) {
+      socket.emit('join_order', displayOrder.id);
+
+      socket.on('order_status_updated', (data: { status: OrderStatus }) => {
+        console.log('Received status update:', data);
+
+        // Find the index of the new status
+        const newStepIndex = orderSteps.findIndex(step => step.status === data.status);
+        if (newStepIndex !== -1) {
+          setCurrentStep(newStepIndex);
+          // You might also want to update the store here
+          // updateOrderStatus(displayOrder.id, data.status); 
+        }
+      });
+
+      return () => {
+        socket.emit('leave_order', displayOrder.id);
+        socket.off('order_status_updated');
+      };
+    }
+  }, [socket, displayOrder?.id]);
 
   const handleReorder = () => {
     if (!displayOrder) return;

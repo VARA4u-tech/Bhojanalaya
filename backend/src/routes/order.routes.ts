@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { Request, Response } from 'express';
 import { supabaseAdmin } from '../config/supabase';
 import { authMiddleware, AuthRequest, adminMiddleware } from '../middleware/auth';
+import { getIO } from '../services/socket.service';
 
 const router = Router();
 
@@ -83,6 +84,15 @@ router.put('/:id/status', authMiddleware, adminMiddleware, async (req: Request, 
             .single();
 
         if (error) throw error;
+
+        // Emit socket event
+        try {
+            const io = getIO();
+            io.to(`order_${id}`).emit('order_status_updated', { status });
+            console.log(`📡 Emitted order_status_updated for order ${id}: ${status}`);
+        } catch (socketError) {
+            console.error('Failed to emit socket event:', socketError);
+        }
 
         res.json({ order: data });
     } catch (error) {

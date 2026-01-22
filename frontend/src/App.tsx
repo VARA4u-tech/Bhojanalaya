@@ -13,6 +13,7 @@ import OrderStatusPage from "./pages/OrderStatusPage";
 import ProfilePage from "./pages/ProfilePage";
 import NotFound from "./pages/NotFound";
 import MenuItemDemo from "./pages/demo/MenuItemDemo";
+import { useUserStore } from "@/store/userStore";
 
 import { CustomerLayout } from "@/components/layout/CustomerLayout";
 import { PageTransition } from "./components/layout/PageTransition";
@@ -22,11 +23,17 @@ const queryClient = new QueryClient();
 
 const AppRoutes = () => {
   const location = useLocation();
+  const { checkSession } = useUserStore();
 
   // Scroll to top on route change
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }, [location.pathname]);
+
+  // Check auth session on mount
+  useEffect(() => {
+    checkSession();
+  }, []);
 
   return (
     <AnimatePresence mode="wait" initial={false}>
