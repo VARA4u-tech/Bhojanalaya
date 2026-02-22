@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import {
   Instagram,
   Twitter,
+  Linkedin,
   Facebook,
   Mail,
   MapPin,
@@ -11,6 +12,7 @@ import {
   Heart,
   Leaf,
   Sparkles,
+  Github,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -96,20 +98,28 @@ export function Footer() {
             </div>
 
             <div className="flex items-center gap-3">
-              <SocialIcon icon={Instagram} href="#" />
-              <SocialIcon icon={Twitter} href="#" />
-              <SocialIcon icon={Facebook} href="#" />
+              <SocialIcon
+                icon={Github}
+                href="https://github.com/VARA4u-tech/bitebook-direct"
+              />
+              <SocialIcon
+                icon={Linkedin}
+                href="https://www.linkedin.com/in/durga-vara-prasad-pappuri-1797701b6/"
+              />
               <SocialIcon icon={Mail} href="#" />
             </div>
 
             <div className="flex flex-col gap-3 pt-2">
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                <MapPin className="h-4 w-4 text-primary" />
-                <span>MG Road, Vijayawada, Andhra Pradesh 520010</span>
+                <MapPin className="h-10 w-10 text-primary" />
+                <span>
+                  DR. HS & DVR MIC College Of Technology,(Approved by AICTE &
+                  Permanently Affiliated to JNTUK, Kakinada) Kanchikacherl
+                </span>
               </div>
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 <Phone className="h-4 w-4 text-primary" />
-                <span>+91 866 123 4567</span>
+                <span>+91 9550533315</span>
               </div>
             </div>
           </div>
