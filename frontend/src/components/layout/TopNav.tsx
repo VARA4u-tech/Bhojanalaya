@@ -52,18 +52,15 @@ export function TopNav() {
         {/* Logo */}
         <Link
           to="/"
-          className="flex items-center gap-1.5 sm:gap-2 font-heading text-base sm:text-xl md:text-2xl text-primary shrink-0 hover:text-primary/80 transition-colors"
+          className="flex items-center gap-1.5 sm:gap-2 shrink-0 hover:opacity-90 transition-opacity"
         >
-          <div className="relative w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 flex items-center justify-center">
+          <div className="relative h-8 sm:h-10 md:h-12 flex items-center justify-center">
             <img
               src="/brand/logo.png"
-              alt="Bhojanālaya Logo"
-              className="w-full h-full object-contain"
+              alt="Bhojanālaya"
+              className="h-full w-auto object-contain"
             />
           </div>
-          <span className="hidden xs:inline truncate max-w-[120px] sm:max-w-none">
-            Bhojanālaya
-          </span>
         </Link>
 
         {/* Desktop Navigation */}

@@ -1,25 +1,48 @@
-# Bhojanālaya - Restaurant Ordering Platform
+# <div align="center"><img src="frontend/public/brand/logo.png" width="80" height="80" alt="Bhojanālaya Logo"><br>Bhojanālaya</div>
 
-A modern, full-stack restaurant ordering and table booking platform built for Vijayawada's finest dining establishments.
+<div align="center">
+  <h3>✨ Skip the Queue, Book Food Instantly ✨</h3>
+  <p>A premium, full-stack restaurant ordering and table booking platform built for modern dining experiences.</p>
+</div>
 
-## 🏗️ Project Structure
+---
 
+<p align="center">
+  <a href="#🚀-getting-started">Getting Started</a> •
+  <a href="#✨-features">Features</a> •
+  <a href="#🛠️-tech-stack">Tech Stack</a> •
+  <a href="#🎨-design-highlights">Design</a> •
+  <a href="https://github.com/VARA4u-tech/bitebook-direct">Repository</a>
+</p>
+
+---
+
+## 🏗️ Project Architecture
+
+Bhojanālaya follows a clean, decoupled architecture with a focus on performance and real-time updates.
+
+```mermaid
+graph TD
+    A[Frontend: React + Vite] <-->|Rest API / WebSockets| B[Backend: Express.js]
+    B <-->|PostgreSQL| C[Supabase DB / Auth]
 ```
+
+### 📂 Directory Structure
+
+```bash
 bitebook-direct/
-├── frontend/          # React + Vite frontend application
-│   ├── src/          # React components, pages, and logic
-│   ├── public/       # Static assets
-│   └── ...           # Frontend configs and dependencies
-├── backend/          # Express.js + TypeScript backend API
-│   ├── src/          # API routes, controllers, middleware
-│   ├── database-schema.sql  # Supabase database schema
-│   └── ...           # Backend configs and dependencies
-└── README.md         # This file
+├── frontend/          # 🎨 React + Vite + Tailwind CSS
+│   ├── src/           # Components, Pages, State Hooks
+│   ├── public/        # Icons, Branding, Static Assets
+├── backend/           # ⚙️ Express.js + TypeScript
+│   ├── src/           # API Routes, Controllers, Middleware
+│   └── schema.sql     # Database Architecture
+└── README.md          # 📍 Project Documentation
 ```
 
 ## 🚀 Getting Started
 
-### Frontend Development
+### 🖥️ Frontend Setup
 
 ```bash
 cd frontend
@@ -27,99 +50,52 @@ npm install
 npm run dev
 ```
 
-The application will be available at `http://localhost:8080`
+👉 _Live at: `http://localhost:8080`_
 
-### Backend Development
+### 🛠️ Backend Setup
 
 ```bash
 cd backend
 npm install
-
-# Setup environment variables
-cp .env.example .env
-# Edit .env with your Supabase credentials
-
+# Configure .env with Supabase keys
 npm run dev
 ```
 
-The API will be available at `http://localhost:3000`
-
-### Build for Production
-
-```bash
-# Frontend
-cd frontend
-npm run build
-
-# Backend
-cd backend
-npm run build
-npm start
-```
-
-## ✨ Features
-
-- **Multi-Restaurant Support**: Browse and order from multiple restaurants
-- **Real-Time Order Tracking**: Track your order status in real-time
-- **Table Booking**: Reserve tables in advance
-- **Smart Menu Filtering**: Filter by cuisine, dietary preferences, and more
-- **Responsive Design**: Optimized for mobile, tablet, and desktop
-- **Premium UI/UX**: Glassmorphism design with smooth animations
-
-## 🛠️ Tech Stack
-
-### Frontend
-- **React 18** - UI library
-- **TypeScript** - Type safety
-- **Vite** - Build tool
-- **Tailwind CSS** - Styling
-- **Framer Motion** - Animations
-- **Zustand** - State management
-- **React Router** - Navigation
-- **Radix UI** - Accessible components
-
-### Backend
-- **Node.js** - Runtime
-- **Express.js** - Web framework
-- **TypeScript** - Type safety
-- **Supabase** - Database, Auth, Storage
-- **Zod** - Validation
-- **JWT** - Authentication tokens
-
-## 📱 Key Pages
-
-- **Home** - Hero section with restaurant showcase
-- **Menu** - Browse dishes with advanced filtering
-- **Orders** - Track order status and history
-- **Booking** - Reserve tables
-- **Profile** - User account management
-
-## 🎨 Design Highlights
-
-- Iconic lotus branding
-- Mobile-optimized responsive layouts
-- Tactile touch interactions
-- Smooth page transitions
-- Premium glassmorphism aesthetic
-
-## 👨‍💻 Development
-
-This project was developed with a focus on:
-- SEO-friendly semantic HTML
-- Accessibility (WCAG compliance)
-- Performance optimization
-- Mobile-first responsive design
-- Clean, maintainable code architecture
-
-## 📄 License
-
-MIT License - feel free to use this project for learning or commercial purposes.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
+👉 _API at: `http://localhost:3000`_
 
 ---
 
-**Developed by**: VARA4u-tech  
-**Repository**: [github.com/VARA4u-tech/bitebook-direct](https://github.com/VARA4u-tech/bitebook-direct)
+## ✨ Premium Features
+
+- 🏥 **Multi-Restaurant Ecosystem**: Centralized hub for diverse dining options.
+- ⚡ **Real-Time Tracking**: Instant status updates via Socket.io.
+- 📅 **Smart Reservations**: Seamless table booking with capacity management.
+- 🔍 **Advanced Filtering**: Precision search by cuisine, price, and dietary needs.
+- 📱 **Mobile-First UX**: Tactile, responsive design for on-the-go booking.
+- 🎭 **Glassmorphism UI**: High-end aesthetic with buttery-smooth Framer Motion animations.
+
+## 🛠️ Tech Stack & Skills
+
+| Category       | Technology                               |
+| :------------- | :--------------------------------------- |
+| **Frontend**   | React 18, TypeScript, Vite, Tailwind CSS |
+| **Animations** | Framer Motion, GSAP                      |
+| **State**      | Zustand, React Query                     |
+| **Backend**    | Node.js, Express.js, TypeScript          |
+| **Database**   | Supabase (PostgreSQL), Auth, Storage     |
+| **Validation** | Zod, JWT                                 |
+| **Real-time**  | Socket.io                                |
+
+## 🎨 Design Excellence
+
+- **Iconic Branding**: Elegant lotus-inspired visual identity.
+- **Micro-interactions**: Subtle hover effects and feedback loops.
+- **SEO Optimized**: Semantic HTML and performance-tuned for search engines.
+- **Accessibility**: Built with Radix UI primitives for WCAG compliance.
+
+---
+
+<div align="center">
+  <p><b>Developed with ❤️ by <a href="https://github.com/VARA4u-tech">VARA4u-tech</a></b></p>
+  <p><i>Empowering the next generation of dining technology.</i></p>
+</div>

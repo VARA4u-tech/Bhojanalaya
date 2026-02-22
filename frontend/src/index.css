@@ -110,13 +110,52 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    /* Subtle organic dot texture on the background */
+    /* Subtle organic dot texture */
     background-image: radial-gradient(
       circle at 1px 1px,
       hsl(168 72% 22% / 0.06) 1px,
       transparent 0
     );
     background-size: 32px 32px;
+    /* Smooth scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
+  }
+
+  /* Remove background texture on small screens to reduce paint cost */
+  @media (max-width: 768px) {
+    body {
+      background-image: none;
+    }
+  }
+
+  /* GPU compositing for animated elements */
+  [data-motion],
+  .motion-safe\:* {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  /* Lazy-render off-screen sections */
+  section {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 400px;
+  }
+
+  /* Remove contain from hero so it renders immediately */
+  section:first-of-type {
+    content-visibility: visible;
+  }
+
+  /* Faster tap on mobile — no 300ms delay */
+  a,
+  button {
+    touch-action: manipulation;
+  }
+
+  /* Images lazy by default */
+  img {
+    image-rendering: auto;
   }
 
   h1,

@@ -4,6 +4,7 @@ import { BottomNav } from "./BottomNav";
 import { AnimatePresence } from "framer-motion";
 import { PageTransition } from "./PageTransition";
 import { CartSheet } from "@/components/cart/CartSheet";
+import { Footer } from "./Footer";
 
 export function CustomerLayout() {
   const location = useLocation();
@@ -20,6 +21,7 @@ export function CustomerLayout() {
           </PageTransition>
         </AnimatePresence>
       </main>
+      <Footer />
       <CartSheet />
       <BottomNav />
     </div>

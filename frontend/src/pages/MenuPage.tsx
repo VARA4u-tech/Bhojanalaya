@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CustomerLayout } from "@/components/layout/CustomerLayout";
 import { Button } from "@/components/ui/button";
@@ -1236,42 +1236,50 @@ export default function MenuPage() {
   const { toggleCart } = useUIStore();
   const { toast } = useToast(); // Initialize useToast
 
-  // Mock dietary data for demo
-  const getDiet = (id: number) => {
-    // Veg items: Thali(2), Idli(4), Dosa(5), Coffee(6), Vankaya(8), Pesarattu(9), Wada(10), Mysore Bajji(13), Rava Dosa(14), Punugulu(15), Pootharekulu(101), Bobbatlu(111), Apricot Delight(112), Veg Biryani(113), Mush Mandi(114), Baklava(116), Avakaya Biryani(107), Badam Milk(108), Manchurian(106), Fried Rice(119), Gobi(120), Paneer(301), Naan(302), Cake(303), Veg Biryani(304), Mango Lassi(306), Veg Buffet(401), Crispy Corn(404), Jamun(406), Berry Cooler(503), Risotto(504), Tiramisu(507), Espresso Martini(508), Caprese(509), Paneer Tikka (601), Dal Makhani (603), Vegetable Pulao (605), Blueberry Cheesecake (606), Iced Tea (607), Masala Dosa (701), Poori Kura (702), Filter Coffee (703), Rava Upma (704), Ghee Roast Dosa (705), Cut Mirchi (706), Rose Milk (707), Veggie Pizza (802), Peri Peri Fries (803), KitKat Shake (804), Red Velvet Pastry (806), Cold Coffee (807), Kadai Paneer (901), Tandoori Roti (903), Jeera Rice (904), Dal Tadka (905), Gulab Jamun (906), Lassi (907), Veg Manchurian Gravy (1002), Hakka Noodles (1004), Spring Rolls (1005), Honey Chilli Potato (1006), Lemonade (1007)
-    // All drinks (201-210) are also veg
-    const vegIds = [
-      2, 4, 5, 6, 8, 9, 10, 13, 14, 15, 101, 111, 112, 113, 114, 116, 107, 108,
-      106, 119, 120, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 301, 302,
-      303, 304, 306, 401, 404, 406, 503, 504, 507, 508, 509, 601, 603, 605, 606,
-      607, 701, 702, 703, 704, 705, 706, 707, 802, 803, 804, 806, 807, 901, 903,
-      904, 905, 906, 907, 1002, 1004, 1005, 1006, 1007,
-    ];
-    return vegIds.includes(id) ? "veg" : "non-veg";
-  };
+  // Pre-built Set for O(1) veg lookup (much faster than Array.includes on every filter)
+  const VEG_SET = useMemo(
+    () =>
+      new Set([
+        2, 4, 5, 6, 8, 9, 10, 13, 14, 15, 101, 111, 112, 113, 114, 116, 107,
+        108, 106, 119, 120, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210,
+        301, 302, 303, 304, 306, 401, 404, 406, 503, 504, 507, 508, 509, 601,
+        603, 605, 606, 607, 701, 702, 703, 704, 705, 706, 707, 802, 803, 804,
+        806, 807, 901, 903, 904, 905, 906, 907, 1002, 1004, 1005, 1006, 1007,
+      ]),
+    [],
+  );
 
-  // Smart Dietary Tags Mock
-  const getDietaryTags = (id: number): string[] => {
-    const tags: string[] = [];
-    // Just mock some tags based on id heuristics for the demo
-    if ([4, 9, 14, 15, 202, 206, 207, 209, 803, 1007].includes(id))
-      tags.push("Vegan");
-    if ([2, 4, 14, 106, 119, 120, 304, 605, 904, 1003].includes(id))
-      tags.push("Jain");
-    if ([4, 8, 11, 102, 103, 104, 117, 305, 403, 502].includes(id))
-      tags.push("Gluten-Free");
-    if ([112, 108, 116, 204, 406, 507, 606, 804].includes(id))
-      tags.push("Contains Nuts");
-    else tags.push("Nut-Free"); // Safe default for the demo
+  // Mock dietary data for demo — memoised so it's computed once
+  const getDiet = useCallback(
+    (id: number) => {
+      return VEG_SET.has(id) ? "veg" : "non-veg";
+    },
+    [VEG_SET],
+  );
 
-    // Dairy free heuristic
-    if (getDiet(id) === "non-veg" && ![301, 604, 1002].includes(id))
-      tags.push("Dairy-Free");
-    if (tags.includes("Vegan") && !tags.includes("Dairy-Free"))
-      tags.push("Dairy-Free");
+  // Smart Dietary Tags Mock — memoised per call via useCallback
+  const getDietaryTags = useCallback(
+    (id: number): string[] => {
+      const tags: string[] = [];
+      if ([4, 9, 14, 15, 202, 206, 207, 209, 803, 1007].includes(id))
+        tags.push("Vegan");
+      if ([2, 4, 14, 106, 119, 120, 304, 605, 904, 1003].includes(id))
+        tags.push("Jain");
+      if ([4, 8, 11, 102, 103, 104, 117, 305, 403, 502].includes(id))
+        tags.push("Gluten-Free");
+      if ([112, 108, 116, 204, 406, 507, 606, 804].includes(id))
+        tags.push("Contains Nuts");
+      else tags.push("Nut-Free");
 
-    return tags;
-  };
+      if (getDiet(id) === "non-veg" && ![301, 604, 1002].includes(id))
+        tags.push("Dairy-Free");
+      if (tags.includes("Vegan") && !tags.includes("Dairy-Free"))
+        tags.push("Dairy-Free");
+
+      return tags;
+    },
+    [getDiet],
+  );
 
   const DIETARY_OPTIONS = [
     "Vegan",
@@ -1289,43 +1297,53 @@ export default function MenuPage() {
     return () => clearTimeout(timer);
   }, [selectedRestaurant]);
 
-  const filteredItems = menuItems
-    .filter((item) => {
-      const matchesRestaurant =
-        !selectedRestaurant || item.restaurantId === selectedRestaurant.id;
-      const matchesSearch = item.name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
+  // filteredItems is now memoised – only recomputes when filters change
+  const filteredItems = useMemo(
+    () =>
+      menuItems
+        .filter((item) => {
+          const matchesRestaurant =
+            !selectedRestaurant || item.restaurantId === selectedRestaurant.id;
+          const matchesSearch = item.name
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase());
 
-      // New Category Logic
-      let matchesCategory = true;
-      if (activeCategory === "veg") {
-        matchesCategory = getDiet(item.id) === "veg";
-      } else if (activeCategory === "non-veg") {
-        matchesCategory = getDiet(item.id) === "non-veg";
-      } else if (activeCategory === "drinks") {
-        matchesCategory = item.category === "drinks";
-      }
-      // 'all' implies matchesCategory = true
+          let matchesCategory = true;
+          if (activeCategory === "veg") {
+            matchesCategory = getDiet(item.id) === "veg";
+          } else if (activeCategory === "non-veg") {
+            matchesCategory = getDiet(item.id) === "non-veg";
+          } else if (activeCategory === "drinks") {
+            matchesCategory = item.category === "drinks";
+          }
 
-      // Dietary Tags Logic
-      const itemTags = getDietaryTags(item.id);
-      const matchesDietaryTags = activeDietaryTags.every((tag) =>
-        itemTags.includes(tag),
-      );
+          const itemTags = getDietaryTags(item.id);
+          const matchesDietaryTags = activeDietaryTags.every((tag) =>
+            itemTags.includes(tag),
+          );
 
-      return (
-        matchesRestaurant &&
-        matchesCategory &&
-        matchesSearch &&
-        matchesDietaryTags
-      );
-    })
-    .sort((a, b) => {
-      if (priceSort === "low-high") return a.price - b.price;
-      if (priceSort === "high-low") return b.price - a.price;
-      return 0;
-    });
+          return (
+            matchesRestaurant &&
+            matchesCategory &&
+            matchesSearch &&
+            matchesDietaryTags
+          );
+        })
+        .sort((a, b) => {
+          if (priceSort === "low-high") return a.price - b.price;
+          if (priceSort === "high-low") return b.price - a.price;
+          return 0;
+        }),
+    [
+      selectedRestaurant,
+      searchQuery,
+      activeCategory,
+      activeDietaryTags,
+      priceSort,
+      getDiet,
+      getDietaryTags,
+    ],
+  );
 
   const addToCart = (item: (typeof menuItems)[0]) => {
     addItem({
