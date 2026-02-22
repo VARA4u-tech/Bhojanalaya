@@ -24,7 +24,10 @@ interface UserState {
     preferences: UserPreferences;
 
     // Actions
-    login: (email: string) => Promise<{ error: any }>;
+    loginWithMagicLink: (email: string) => Promise<{ error: any }>;
+    loginWithPassword: (email: string, password: string) => Promise<{ error: any }>;
+    signUpWithPassword: (email: string, password: string, name: string) => Promise<{ error: any }>;
+    loginWithGoogle: () => Promise<{ error: any }>;
     logout: () => Promise<void>;
     updatePreferences: (preferences: Partial<UserPreferences>) => void;
     checkSession: () => Promise<void>;
@@ -44,17 +47,44 @@ export const useUserStore = create<UserState>()(
             isLoading: true,
             preferences: defaultPreferences,
 
-            login: async (email) => {
-                // For this app, we'll use OTP login as it's common for food apps
-                // Or we can use proper sign in if password is provided
-                // For now, let's assume we want to support Magic Link / OTP
+            loginWithMagicLink: async (email) => {
                 const { error } = await supabase.auth.signInWithOtp({
                     email,
                     options: {
                         emailRedirectTo: window.location.origin,
                     }
                 });
+                return { error };
+            },
 
+            loginWithPassword: async (email, password) => {
+                const { error, data } = await supabase.auth.signInWithPassword({
+                    email,
+                    password
+                });
+                return { error };
+            },
+
+            signUpWithPassword: async (email, password, name) => {
+                const { error, data } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            name: name
+                        }
+                    }
+                });
+                return { error };
+            },
+
+            loginWithGoogle: async () => {
+                const { error } = await supabase.auth.signInWithOAuth({
+                    provider: 'google',
+                    options: {
+                        redirectTo: window.location.origin
+                    }
+                });
                 return { error };
             },
 
@@ -104,14 +134,29 @@ export const useUserStore = create<UserState>()(
         }),
         {
             name: 'bhojanālaya-user-storage',
-            partialize: (state) => ({ preferences: state.preferences }), // Don't persist user/auth state, let Supabase handle it
+            // Persist user state and preferences for "Remember Me" functionality
+            partialize: (state) => ({
+                user: state.user,
+                isAuthenticated: state.isAuthenticated,
+                preferences: state.preferences
+            }),
+            // Only rehydrate if we have a valid session
+            onRehydrateStorage: () => (state) => {
+                if (state) {
+                    // Check session validity on rehydration
+                    state.checkSession();
+                }
+            },
         }
     )
 );
 
-// Initialize auth listener
+// Initialize auth listener for persistent sessions
 supabase.auth.onAuthStateChange((event, session) => {
-    if (event === 'SIGNED_IN' && session?.user) {
+    console.log('Auth event:', event, 'Session:', !!session);
+
+    if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') && session?.user) {
+        // User is authenticated - update store
         useUserStore.setState({
             user: {
                 id: session.user.id,
@@ -123,6 +168,7 @@ supabase.auth.onAuthStateChange((event, session) => {
             isLoading: false
         });
     } else if (event === 'SIGNED_OUT') {
+        // User signed out - clear store
         useUserStore.setState({
             user: null,
             isAuthenticated: false,

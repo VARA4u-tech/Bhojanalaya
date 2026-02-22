@@ -20,7 +20,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
     useEffect(() => {
         // In production, this should come from env
-        const SOCKET_URL = 'http://localhost:5000';
+        const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
         const socketInstance = io(SOCKET_URL, {
             withCredentials: true,

@@ -9,6 +9,7 @@ import { ErrorFallback } from "@/components/error/ErrorFallback";
 import Index from "./pages/Index";
 import MenuPage from "./pages/MenuPage";
 import BookingPage from "./pages/BookingPage";
+import CheckoutPage from "./pages/CheckoutPage";
 import OrderStatusPage from "./pages/OrderStatusPage";
 import ProfilePage from "./pages/ProfilePage";
 import NotFound from "./pages/NotFound";
@@ -43,6 +44,7 @@ const AppRoutes = () => {
           <Route path="/" element={<PageTransition><Index /></PageTransition>} />
           <Route path="/menu" element={<PageTransition><MenuPage /></PageTransition>} />
           <Route path="/booking" element={<PageTransition><BookingPage /></PageTransition>} />
+          <Route path="/checkout" element={<PageTransition><CheckoutPage /></PageTransition>} />
           <Route path="/orders" element={<PageTransition><OrderStatusPage /></PageTransition>} />
           <Route path="/profile" element={<PageTransition><ProfilePage /></PageTransition>} />
           <Route path="/demo/menu-item" element={<PageTransition><MenuItemDemo /></PageTransition>} />
@@ -56,17 +58,17 @@ const AppRoutes = () => {
 };
 
 const App = () => (
-  <ErrorBoundary fallback={<ErrorFallback fullPage />}>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <ErrorBoundary fallback={<ErrorFallback fullPage />}>
           <AppRoutes />
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
-  </ErrorBoundary>
+        </ErrorBoundary>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
 );
 
 export default App;

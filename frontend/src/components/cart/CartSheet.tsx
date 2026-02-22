@@ -31,31 +31,9 @@ export function CartSheet() {
 
     const { addItem } = useCartStore();
 
-    const handleCheckout = async () => {
-        try {
-            const response = await fetch('/api/payment/create-checkout-session', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // Add Authorization header if you have a token in localStorage or similar
-                    // 'Authorization': `Bearer ${token}` 
-                    // For now assuming cookies or internal auth handles it, or ignoring auth for demo
-                },
-                body: JSON.stringify({
-                    items: items,
-                    restaurantId: items[0]?.restaurantId || 'default'
-                }),
-            });
-
-            const data = await response.json();
-            if (data.url) {
-                window.location.href = data.url;
-            } else {
-                console.error("No checkout URL returned", data);
-            }
-        } catch (error) {
-            console.error("Checkout failed", error);
-        }
+    const handleCheckout = () => {
+        closeCart();
+        navigate("/checkout");
     };
 
     return (

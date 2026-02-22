@@ -12,8 +12,8 @@ export function CustomerLayout() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <TopNav />
-      {/* Increased top padding for floating top nav and bottom padding for floating bottom nav */}
-      <main className="flex-1 pt-24 pb-32 lg:pt-28 lg:pb-0">
+      {/* Adjusted padding for responsive nav heights */}
+      <main className="flex-1 pt-[4.5rem] sm:pt-24 pb-24 sm:pb-28 lg:pt-28 lg:pb-0">
         <AnimatePresence mode="wait">
           <PageTransition key={location.pathname} className="h-full">
             {currentOutlet}

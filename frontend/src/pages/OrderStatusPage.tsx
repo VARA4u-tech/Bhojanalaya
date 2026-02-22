@@ -52,6 +52,11 @@ export default function OrderStatusPage() {
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  // Use active order or show mock data
+  const displayOrder = activeOrder || (mockOrder as any);
+  const total = displayOrder.items?.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0) || 0;
+  const canCancelOrder = displayOrder && (displayOrder.status === 'waiting' || displayOrder.status === 'confirmed');
+
   // Scroll to top on mount to prevent glitchy transitions
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -138,10 +143,7 @@ export default function OrderStatusPage() {
     }
   };
 
-  // Use active order or show mock data
-  const displayOrder = activeOrder || (mockOrder as any);
-  const total = displayOrder.items?.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0) || 0;
-  const canCancelOrder = displayOrder && (displayOrder.status === 'waiting' || displayOrder.status === 'confirmed');
+
 
   return (
     <>

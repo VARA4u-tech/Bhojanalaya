@@ -35,29 +35,28 @@ export function CancelOrderDialog({
                         </div>
                         <AlertDialogTitle className="text-xl">Cancel Order?</AlertDialogTitle>
                     </div>
-                    <AlertDialogDescription className="space-y-3 pt-2">
-                        <p>
-                            Are you sure you want to cancel this order? This action cannot be
-                            undone.
-                        </p>
-
-                        <div className="bg-muted rounded-lg p-4 space-y-2">
-                            <div className="flex items-center justify-between text-sm">
-                                <span className="text-muted-foreground">Order Total:</span>
-                                <span className="font-medium">${orderTotal.toFixed(2)}</span>
-                            </div>
-                            <div className="flex items-center justify-between text-sm">
-                                <span className="text-muted-foreground">Refund Amount (50%):</span>
-                                <span className="font-bold text-primary">${refundAmount.toFixed(2)}</span>
-                            </div>
-                        </div>
-
-                        <div className="text-xs text-muted-foreground border-l-2 border-primary/50 pl-3">
-                            <strong>Cancellation Policy:</strong> Orders can be cancelled before
-                            preparation begins. You'll receive a 50% refund of the order total.
-                        </div>
+                    <AlertDialogDescription>
+                        Are you sure you want to cancel this order? This action cannot be undone.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
+
+                <div className="space-y-3">
+                    <div className="bg-muted rounded-lg p-4 space-y-2">
+                        <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">Order Total:</span>
+                            <span className="font-medium">${orderTotal.toFixed(2)}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm">
+                            <span className="text-muted-foreground">Refund Amount (50%):</span>
+                            <span className="font-bold text-primary">${refundAmount.toFixed(2)}</span>
+                        </div>
+                    </div>
+
+                    <div className="text-xs text-muted-foreground border-l-2 border-primary/50 pl-3">
+                        <strong>Cancellation Policy:</strong> Orders can be cancelled before
+                        preparation begins. You'll receive a 50% refund of the order total.
+                    </div>
+                </div>
                 <AlertDialogFooter>
                     <AlertDialogCancel>Keep Order</AlertDialogCancel>
                     <AlertDialogAction
