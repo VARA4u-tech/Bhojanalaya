@@ -129,15 +129,15 @@ export function LoginView() {
   };
 
   return (
-    <div className="w-full max-w-[900px] mx-auto">
-      <div className="bg-white rounded-3xl shadow-soft-xl border border-border/40 p-3 sm:p-4 animate-in fade-in zoom-in-95 duration-500 flex flex-col md:flex-row gap-4 sm:gap-6">
+    <div className="w-full max-w-[1100px] mx-auto my-8">
+      <div className="bg-white rounded-[2rem] shadow-soft-2xl border border-border/40 p-4 sm:p-6 lg:p-8 animate-in fade-in zoom-in-95 duration-500 flex flex-col md:flex-row gap-6 sm:gap-10">
         {/* Left Side: Animated Hero (hidden on small screens) */}
-        <div className="hidden md:block w-1/2 rounded-[1.25rem] overflow-hidden">
-          <VegetableHero />
+        <div className="hidden md:block w-[55%] rounded-[1.5rem] overflow-hidden min-h-[800px]">
+          <VegetableHero variant={activeTab as "login" | "signup"} />
         </div>
 
         {/* Right Side: Auth Forms */}
-        <div className="w-full md:w-1/2 px-4 py-8 sm:px-8 flex flex-col justify-center">
+        <div className="w-full md:w-[45%] px-4 py-8 sm:px-8 flex flex-col justify-center">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 text-primary mb-4">
               <User className="w-6 h-6" />
