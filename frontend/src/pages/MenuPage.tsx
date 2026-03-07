@@ -1572,7 +1572,9 @@ export default function MenuPage() {
 
           <select
             value={priceSort}
-            onChange={(e) => setPriceSort(e.target.value as any)}
+            onChange={(e) =>
+              setPriceSort(e.target.value as "none" | "low-high" | "high-low")
+            }
             className="h-10 px-4 rounded-xl border border-border bg-card text-sm focus:ring-primary focus:border-primary outline-none"
             aria-label="Sort menu items by price" // Added aria-label
           >

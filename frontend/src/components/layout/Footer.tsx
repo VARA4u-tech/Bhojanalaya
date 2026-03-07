@@ -26,7 +26,7 @@ const footerLinks = [
       { label: "Project Roadmap", href: "/docs" },
       {
         label: "GitHub Repository",
-        href: "https://github.com/VARA4u-tech/bitebook-direct",
+        href: "https://github.com/VARA4u-tech/Bhojanalaya",
       },
     ],
   },
@@ -98,10 +98,7 @@ export function Footer() {
             </div>
 
             <div className="flex items-center gap-3">
-              <SocialIcon
-                icon={Github}
-                href="https://github.com/VARA4u-tech/bitebook-direct"
-              />
+              <SocialIcon icon={Github} href="ht" />
               <SocialIcon
                 icon={Linkedin}
                 href="https://www.linkedin.com/in/durga-vara-prasad-pappuri-1797701b6/"
@@ -178,10 +175,10 @@ export function Footer() {
             <span className="flex items-center gap-1">
               Handcrafted by{" "}
               <Link
-                to="#"
+                to="https://github.com/VARA4u-tech/Bhojanalaya"
                 className="text-primary hover:text-secondary hover:underline underline-offset-4 transition-colors"
               >
-                VARA4u-tech
+                VARA.
               </Link>
             </span>
           </div>
