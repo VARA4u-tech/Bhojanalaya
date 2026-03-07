@@ -17,7 +17,7 @@ import {
   Heart,
   ShoppingBag,
   Calendar,
-  ChevronRight
+  ChevronRight,
 } from "lucide-react";
 
 import { useOrderStore, useBookingStore, useCartStore } from "@/store";
@@ -41,7 +41,7 @@ export default function ProfilePage() {
       title: "Added to Cart",
       description: "Previous items have been added to your cart.",
     });
-    navigate('/menu');
+    navigate("/menu");
   };
 
   const containerVariants = {
@@ -49,14 +49,14 @@ export default function ProfilePage() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
+        staggerChildren: 0.1,
+      },
+    },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { opacity: 1, y: 0 },
   };
 
   if (!isAuthenticated) {
@@ -80,20 +80,29 @@ export default function ProfilePage() {
       className="container py-6 lg:py-10 max-w-4xl"
     >
       {/* Profile Header */}
-      <motion.div variants={itemVariants} className="bg-card/70 backdrop-blur-md border border-border/50 rounded-3xl p-8 shadow-soft mb-8 relative overflow-hidden group">
+      <motion.div
+        variants={itemVariants}
+        className="bg-card/70 backdrop-blur-md border border-border/50 rounded-3xl p-8 shadow-soft mb-8 relative overflow-hidden group"
+      >
         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-primary/10 transition-colors" />
 
         <div className="flex flex-col sm:flex-row items-center sm:items-center gap-6 relative z-10 text-center sm:text-left">
           <div className="w-24 h-24 rounded-3xl bg-primary/10 border border-primary/20 flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-transform">
             {user?.avatar ? (
-              <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+              <img
+                src={user.avatar}
+                alt={user.name}
+                className="w-full h-full object-cover"
+              />
             ) : (
               <User className="h-12 w-12 text-primary" />
             )}
             <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
           <div className="flex-1">
-            <h1 className="font-heading text-h1 mb-2">{user?.name || 'User'}</h1>
+            <h1 className="font-heading text-h1 mb-2">
+              {user?.name || "User"}
+            </h1>
             <div className="flex flex-wrap justify-center sm:justify-start gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-2 px-3 py-1 bg-muted/50 rounded-full">
                 <Mail className="h-4 w-4" />
@@ -107,7 +116,10 @@ export default function ProfilePage() {
               )}
             </div>
           </div>
-          <Button variant="outline" className="rounded-xl border-border/50 hover:bg-muted/50">
+          <Button
+            variant="outline"
+            className="rounded-xl border-border/50 hover:bg-muted/50"
+          >
             <Settings className="h-4 w-4 mr-2" />
             Manage Account
           </Button>
@@ -115,22 +127,54 @@ export default function ProfilePage() {
       </motion.div>
 
       {/* Stats Grid */}
-      <motion.div variants={itemVariants} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <motion.div
+        variants={itemVariants}
+        className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
+      >
         {[
-          { label: "Total Orders", value: orders.length.toString(), icon: ShoppingBag, color: "text-blue-500" },
-          { label: "Bookings", value: bookings.length.toString(), icon: Calendar, color: "text-green-500" },
-          { label: "Favorites", value: "12", icon: Heart, color: "text-red-500" },
-          { label: "Rank", value: "Elite", icon: ShieldCheck, color: "text-amber-500" },
+          {
+            label: "Total Orders",
+            value: orders.length.toString(),
+            icon: ShoppingBag,
+            color: "text-blue-500",
+          },
+          {
+            label: "Bookings",
+            value: bookings.length.toString(),
+            icon: Calendar,
+            color: "text-green-500",
+          },
+          {
+            label: "Favorites",
+            value: "12",
+            icon: Heart,
+            color: "text-red-500",
+          },
+          {
+            label: "Rank",
+            value: "Elite",
+            icon: ShieldCheck,
+            color: "text-amber-500",
+          },
         ].map((stat) => (
           <div
             key={stat.label}
             className="bg-card/70 backdrop-blur-md border border-border/50 rounded-2xl p-4 shadow-soft text-center group hover:border-primary/30 transition-all"
           >
-            <div className={cn("inline-flex h-8 w-8 rounded-lg bg-muted flex items-center justify-center mb-2 group-hover:scale-110 transition-transform", stat.color)}>
+            <div
+              className={cn(
+                "inline-flex h-8 w-8 rounded-lg bg-muted flex items-center justify-center mb-2 group-hover:scale-110 transition-transform",
+                stat.color,
+              )}
+            >
               <stat.icon className="h-4 w-4" />
             </div>
-            <div className="font-heading text-2xl font-bold text-primary mb-1">{stat.value}</div>
-            <div className="text-xs text-muted-foreground uppercase tracking-wider">{stat.label}</div>
+            <div className="font-heading text-2xl font-bold text-primary mb-1">
+              {stat.value}
+            </div>
+            <div className="text-xs text-muted-foreground uppercase tracking-wider">
+              {stat.label}
+            </div>
           </div>
         ))}
       </motion.div>
@@ -139,7 +183,9 @@ export default function ProfilePage() {
         {/* Left Column: Quick Actions */}
         <motion.div variants={itemVariants} className="lg:col-span-1 space-y-6">
           <div className="bg-card/70 backdrop-blur-md border border-border/50 rounded-2xl p-6 shadow-soft">
-            <h3 className="font-heading text-lg font-bold mb-4">Quick Actions</h3>
+            <h3 className="font-heading text-lg font-bold mb-4">
+              Quick Actions
+            </h3>
             <div className="space-y-2">
               {[
                 { label: "Saved Addresses", icon: MapPin },
@@ -170,7 +216,11 @@ export default function ProfilePage() {
           <motion.section variants={itemVariants}>
             <div className="flex items-center justify-between mb-4 px-2">
               <h2 className="font-heading text-h2">Recent Orders</h2>
-              <Button variant="link" className="text-primary p-0 h-auto" onClick={() => navigate('/orders')}>
+              <Button
+                variant="link"
+                className="text-primary p-0 h-auto"
+                onClick={() => navigate("/orders")}
+              >
                 View All
               </Button>
             </div>
@@ -182,7 +232,10 @@ export default function ProfilePage() {
                     title="No past orders"
                     description="Delicious meals are just a few clicks away."
                     icon={ShoppingBag}
-                    action={{ label: "Go to Menu", onClick: () => navigate('/menu') }}
+                    action={{
+                      label: "Go to Menu",
+                      onClick: () => navigate("/menu"),
+                    }}
                   />
                 </div>
               ) : (
@@ -199,7 +252,9 @@ export default function ProfilePage() {
                         </div>
                         <div>
                           <div className="flex items-center gap-3 mb-1">
-                            <span className="font-heading font-bold text-lg">{order.orderNumber || order.id.slice(0, 8)}</span>
+                            <span className="font-heading font-bold text-lg">
+                              {order.orderNumber || order.id.slice(0, 8)}
+                            </span>
                             <StatusBadge status={order.status} />
                           </div>
                           <div className="flex items-center gap-2 text-xs text-muted-foreground uppercase tracking-widest">
@@ -209,14 +264,22 @@ export default function ProfilePage() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="font-heading font-bold text-2xl text-primary">${order.total.toFixed(2)}</div>
+                        <div className="font-heading font-bold text-2xl text-primary">
+                          ${order.total.toFixed(2)}
+                        </div>
                       </div>
                     </div>
 
                     <div className="text-sm text-foreground/80 mb-6 flex flex-wrap gap-2">
                       {order.items.map((i, idx) => (
-                        <span key={idx} className="bg-muted px-2 py-0.5 rounded-md border border-border/30">
-                          {i.name} <span className="text-muted-foreground ml-1">×{i.quantity}</span>
+                        <span
+                          key={idx}
+                          className="bg-muted px-2 py-0.5 rounded-md border border-border/30"
+                        >
+                          {i.name}{" "}
+                          <span className="text-muted-foreground ml-1">
+                            ×{i.quantity}
+                          </span>
                         </span>
                       ))}
                     </div>
@@ -235,7 +298,7 @@ export default function ProfilePage() {
                         variant="ghost"
                         size="sm"
                         className="flex-1 rounded-xl h-10 hover:bg-muted font-medium"
-                        onClick={() => navigate('/orders')}
+                        onClick={() => navigate("/orders")}
                       >
                         View Receipt
                       </Button>
@@ -250,7 +313,11 @@ export default function ProfilePage() {
           <motion.section variants={itemVariants}>
             <div className="flex items-center justify-between mb-4 px-2">
               <h2 className="font-heading text-h2">Reservations</h2>
-              <Button variant="link" className="text-primary p-0 h-auto" onClick={() => navigate('/booking')}>
+              <Button
+                variant="link"
+                className="text-primary p-0 h-auto"
+                onClick={() => navigate("/booking")}
+              >
                 Book New Table
               </Button>
             </div>
@@ -262,7 +329,10 @@ export default function ProfilePage() {
                     title="No reservations"
                     description="Plan your next dining experience now."
                     icon={Calendar}
-                    action={{ label: "Book a Table", onClick: () => navigate('/booking') }}
+                    action={{
+                      label: "Book a Table",
+                      onClick: () => navigate("/booking"),
+                    }}
                   />
                 </div>
               ) : (
@@ -277,7 +347,9 @@ export default function ProfilePage() {
                       </div>
                       <div className="flex-1">
                         <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                          <span className="font-heading font-bold text-lg">{booking.restaurantName}</span>
+                          <span className="font-heading font-bold text-lg">
+                            {booking.restaurantName}
+                          </span>
                           <div className="px-3 py-1 bg-green-500/10 text-green-600 rounded-full text-xs font-bold uppercase tracking-wider border border-green-500/20">
                             Confirmed
                           </div>
@@ -316,7 +388,9 @@ export default function ProfilePage() {
           <LogOut className="h-5 w-5 mr-2" />
           Secure Logout
         </Button>
-        <p className="mt-4 text-sm text-muted-foreground">Version 2.5.0 • Powered by Bhojanālaya Premium</p>
+        <p className="mt-4 text-sm text-muted-foreground">
+          Version 2.5.0 • Powered by Bhojanālaya Premium
+        </p>
       </motion.div>
     </motion.div>
   );

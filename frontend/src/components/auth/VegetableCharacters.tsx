@@ -101,8 +101,81 @@ function Eye({
   );
 }
 
+const CharacterLimbs = ({ color = "#4a0000" }) => (
+  <div className="absolute inset-0 z-[-1] pointer-events-none">
+    {/* Left Arm */}
+    <svg
+      className="absolute top-[35%] -left-10 w-12 h-16 overflow-visible drop-shadow-sm"
+      viewBox="0 0 100 100"
+    >
+      <path
+        d="M100 40 Q 40 20, 20 80"
+        fill="none"
+        stroke={color}
+        strokeWidth="10"
+        strokeLinecap="round"
+      />
+      <circle cx="20" cy="80" r="10" fill={color} />
+    </svg>
+    {/* Right Arm */}
+    <svg
+      className="absolute top-[35%] -right-10 w-12 h-16 overflow-visible drop-shadow-sm"
+      viewBox="0 0 100 100"
+    >
+      <path
+        d="M0 40 Q 60 20, 80 80"
+        fill="none"
+        stroke={color}
+        strokeWidth="10"
+        strokeLinecap="round"
+      />
+      <circle cx="80" cy="80" r="10" fill={color} />
+    </svg>
+    {/* Left Leg */}
+    <svg
+      className="absolute -bottom-10 left-[20%] w-10 h-14 overflow-visible drop-shadow-sm"
+      viewBox="0 0 100 100"
+    >
+      <path
+        d="M50 0 Q 40 40, 40 70"
+        fill="none"
+        stroke={color}
+        strokeWidth="10"
+        strokeLinecap="round"
+      />
+      <path
+        d="M40 70 Q 10 80, 5 85"
+        fill="none"
+        stroke={color}
+        strokeWidth="10"
+        strokeLinecap="round"
+      />
+    </svg>
+    {/* Right Leg */}
+    <svg
+      className="absolute -bottom-10 right-[20%] w-10 h-14 overflow-visible drop-shadow-sm"
+      viewBox="0 0 100 100"
+    >
+      <path
+        d="M50 0 Q 60 40, 60 70"
+        fill="none"
+        stroke={color}
+        strokeWidth="10"
+        strokeLinecap="round"
+      />
+      <path
+        d="M60 70 Q 90 80, 95 85"
+        fill="none"
+        stroke={color}
+        strokeWidth="10"
+        strokeLinecap="round"
+      />
+    </svg>
+  </div>
+);
+
 const CharacterShadow = () => (
-  <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-[80%] h-6 bg-black/25 blur-md rounded-[100%] z-[-1]" />
+  <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[80%] h-6 bg-black/30 blur-[6px] rounded-[100%] z-[-2]" />
 );
 
 const CharacterWrapper = ({
@@ -115,14 +188,14 @@ const CharacterWrapper = ({
   className?: string;
 }) => (
   <motion.div
-    animate={{ y: [0, -6, 0] }}
+    animate={{ rotate: [-1, 1, -1], scale: [0.99, 1.01, 0.99] }}
     transition={{
       duration: 4 + delay / 2,
       repeat: Infinity,
       ease: "easeInOut",
       delay,
     }}
-    className={`relative group cursor-pointer ${className}`}
+    className={`relative group cursor-pointer origin-bottom ${className}`}
   >
     <motion.div whileHover={{ scale: 1.05 }} transition={{ duration: 0.2 }}>
       {children}
@@ -142,6 +215,7 @@ function RealisticTomato({ mousePos }: { mousePos: { x: number; y: number } }) {
               "radial-gradient(circle at 35% 25%, #ff5252 0%, #d32f2f 50%, #8e0000 100%)",
           }}
         >
+          <CharacterLimbs color="#5d0000" />
           <div className="absolute top-[10%] left-[15%] w-12 h-6 rounded-[50%] bg-white/40 rotate-[-20deg] blur-md mix-blend-overlay"></div>
           <div className="absolute -top-10 w-20 h-20">
             <svg viewBox="0 0 100 100" className="drop-shadow-md">
@@ -205,6 +279,7 @@ function RealisticEggplant({
               "inset -15px -15px 30px rgba(0,0,0,0.5), inset 15px 15px 30px rgba(255,255,255,0.2), 0 15px 20px rgba(0,0,0,0.3)",
           }}
         >
+          <CharacterLimbs color="#311b92" />
           <div className="absolute top-[10%] left-[20%] w-6 h-12 rounded-[50%] bg-white/30 rotate-[15deg] blur-[2px] pointer-events-none mix-blend-overlay"></div>
 
           {/* Eggplant cap / stem */}
@@ -253,6 +328,7 @@ function RealisticApple({ mousePos }: { mousePos: { x: number; y: number } }) {
               "radial-gradient(circle at 30% 20%, #ef5350 0%, #c62828 50%, #5d0000 100%)",
           }}
         >
+          <CharacterLimbs color="#5d0000" />
           <div className="absolute top-[12%] left-[15%] w-8 h-4 rounded-[50%] bg-white/40 rotate-[-20deg] blur-md mix-blend-overlay"></div>
           <div className="absolute -top-7 w-3 h-10 bg-gradient-to-b from-[#5d4037] to-[#3e2723] rounded-t-sm rotate-[15deg] shadow-lg" />
           <div className="absolute -top-4 left-5 w-12 h-6 rounded-[0_100%_0_100%] rotate-[-25deg] shadow-md border border-black/10 bg-gradient-to-br from-[#81c784] to-[#2e7d32]" />
@@ -289,6 +365,7 @@ function RealisticSteak({ mousePos }: { mousePos: { x: number; y: number } }) {
               "radial-gradient(ellipse at center, #e53935 0%, #c62828 50%, #5d0000 100%)",
           }}
         >
+          <CharacterLimbs color="#5d0000" />
           {/* Marbling details */}
           <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MiIgaGVpZ2h0PSI0MiI+PGNpcmNsZSBjeD0iMjEiIGN5PSIyMSIgcj0iMjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wMSkiLz48L3N2Zz4=')] opacity-50 rounded-[inherit]"></div>
           <div className="absolute -left-6 top-1/2 -translate-y-1/2 w-8 h-16 bg-[#fff3e0] rounded-l-full shadow-[inset_-2px_0_10px_rgba(0,0,0,0.3)] border-r border-black/10" />
@@ -334,6 +411,7 @@ function RealisticAvocado({
               "radial-gradient(circle at 45% 40%, #e8f5e9 0%, #a5d6a7 45%, #388e3c 100%)",
           }}
         >
+          <CharacterLimbs color="#1b2b10" />
           <div className="absolute top-[8%] right-[20%] w-8 h-16 bg-white/30 rounded-[50%] rotate-[20deg] blur-md pointer-events-none"></div>
           <div
             className="relative w-28 h-28 rounded-full flex flex-col items-center justify-center shadow-[10px_10px_20px_rgba(0,0,0,0.4),inset_-10px_-10px_20px_rgba(0,0,0,0.5),inset_15px_15px_20px_rgba(255,255,255,0.15)]"
@@ -377,6 +455,7 @@ function RealisticOrange({ mousePos }: { mousePos: { x: number; y: number } }) {
               "radial-gradient(circle at 35% 25%, #ffb74d 0%, #f57c00 50%, #e65100 100%)",
           }}
         >
+          <CharacterLimbs color="#b23c00" />
           {/* Peel Texture */}
           <div
             className="absolute inset-0 rounded-full opacity-20"
@@ -431,6 +510,7 @@ function RealisticChickenLeg({
               "radial-gradient(circle at 35% 25%, #f4511e 0%, #d84315 50%, #4e342e 100%)",
           }}
         >
+          <CharacterLimbs color="#4e342e" />
           <div className="absolute top-[12%] left-[12%] w-8 h-10 bg-white/20 rounded-full rotate-[-25deg] blur-md shadow-inner"></div>
           <div className="flex gap-4">
             <Eye
@@ -595,6 +675,116 @@ function AnimatedBird({
   );
 }
 
+function RealisticHouse({
+  style,
+  isNight,
+}: {
+  style?: React.CSSProperties;
+  isNight: boolean;
+}) {
+  return (
+    <div className="absolute z-10 flex flex-col items-center" style={style}>
+      {/* Chimney */}
+      <div
+        className={`absolute top-4 left-10 w-6 h-16 ${isNight ? "bg-[#2b1910]" : "bg-[#5d4037]"} z-10`}
+      >
+        <div
+          className={`absolute -top-1 -left-1 w-8 h-2 ${isNight ? "bg-[#1a0f0a]" : "bg-[#4e342e]"}`}
+        />
+        <motion.div
+          animate={{
+            y: [-10, -25],
+            x: [0, 8, -5],
+            opacity: [0, 0.4, 0],
+            scale: [1, 1.5],
+          }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeOut" }}
+          className="absolute -top-6 left-0 w-6 h-6 bg-slate-300/40 rounded-full blur-md"
+        />
+        <motion.div
+          animate={{
+            y: [-15, -35],
+            x: [0, -8, 5],
+            opacity: [0, 0.3, 0],
+            scale: [1, 1.8],
+          }}
+          transition={{
+            duration: 4,
+            repeat: Infinity,
+            delay: 1,
+            ease: "easeOut",
+          }}
+          className="absolute -top-10 left-0 w-8 h-8 bg-slate-200/30 rounded-full blur-md"
+        />
+      </div>
+
+      {/* Roof */}
+      <div className="relative z-20 w-48 h-24 flex justify-center drop-shadow-lg">
+        <div
+          className={`absolute bottom-0 w-full h-full ${isNight ? "bg-[#7f0000]" : "bg-[#c62828]"}`}
+          style={{ clipPath: "polygon(50% 0%, 0% 100%, 100% 100%)" }}
+        >
+          <div
+            className="absolute inset-0 opacity-[0.15]"
+            style={{
+              backgroundImage:
+                "repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(0,0,0,0.3) 8px, rgba(0,0,0,0.3) 16px)",
+            }}
+          />
+        </div>
+        <div
+          className={`absolute bottom-0 w-[105%] h-2 ${isNight ? "bg-[#4a0000]" : "bg-[#b71c1c]"} rounded-full`}
+        />
+      </div>
+
+      {/* Main Building */}
+      <div
+        className={`relative z-10 w-40 h-28 ${isNight ? "bg-[#ffd54f]/90" : "bg-[#fff8e1]"} rounded-b-sm shadow-[inset_0_-8px_15px_rgba(0,0,0,0.1)] border-b-4 border-black/10 flex items-end justify-center pb-0`}
+      >
+        {/* Texture */}
+        <div
+          className="absolute inset-0 opacity-[0.05]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(0deg, transparent, transparent 10px, #000 10px, #000 12px)",
+          }}
+        />
+
+        {/* Door */}
+        <div
+          className={`absolute bottom-0 w-12 h-16 border-2 border-[#5d4037] border-b-0 rounded-t-md flex items-center justify-center p-1 ${isNight ? "bg-[#3e2723]" : "bg-[#795548]"}`}
+        >
+          <div
+            className={`w-full h-full border border-black/30 rounded-sm ${isNight ? "bg-[#4e342e]" : "bg-[#8d6e63]"}`}
+          />
+          <div className="absolute right-2 top-1/2 w-1.5 h-1.5 rounded-full bg-yellow-500 shadow-sm" />
+        </div>
+
+        {/* Windows */}
+        <div
+          className={`absolute bottom-8 left-3 w-8 h-10 border-2 border-[#795548] rounded-t-full flex flex-col items-center overflow-hidden ${isNight ? "bg-orange-300 shadow-[0_0_15px_rgba(255,165,0,0.5)]" : "bg-blue-100"}`}
+        >
+          <div className="w-full h-1/2 border-b-2 border-[#795548]" />
+          <div className="absolute h-full w-0.5 bg-[#795548]" />
+          {isNight && (
+            <div className="absolute inset-0 bg-yellow-400/20 animate-pulse" />
+          )}
+        </div>
+
+        <div
+          className={`absolute bottom-8 right-3 w-8 h-10 border-2 border-[#795548] rounded-t-full flex flex-col items-center overflow-hidden ${isNight ? "bg-orange-300 shadow-[0_0_15px_rgba(255,165,0,0.5)]" : "bg-blue-100"}`}
+        >
+          <div className="w-full h-1/2 border-b-2 border-[#795548]" />
+          <div className="absolute h-full w-0.5 bg-[#795548]" />
+          {isNight && (
+            <div className="absolute inset-0 bg-yellow-400/20 animate-pulse" />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function GroundedRealisticFarmEnvironment({ isLogin }: { isLogin: boolean }) {
   const isNight = !isLogin;
 
@@ -646,7 +836,7 @@ function GroundedRealisticFarmEnvironment({ isLogin }: { isLogin: boolean }) {
           scale: isNight ? 0.9 : 1.1,
         }}
         transition={{ duration: 1.5, ease: "easeInOut" }}
-        className={`absolute top-10 left-1/2 w-24 h-24 sm:w-32 sm:h-32 rounded-full -ml-12 sm:-ml-16 transition-colors duration-1500 ${isNight ? "bg-indigo-50 shadow-[0_0_80px_rgba(224,231,255,0.7)] border-2 border-indigo-100" : "bg-gradient-to-br from-yellow-100 to-amber-400 shadow-[0_0_100px_rgba(253,224,71,0.9)]"}`}
+        className={`absolute top-10 sm:top-16 left-1/2 md:left-[15%] lg:left-[20%] -ml-12 sm:-ml-16 md:ml-0 w-24 h-24 sm:w-32 sm:h-32 rounded-full transition-colors duration-1500 ${isNight ? "bg-indigo-50 shadow-[0_0_80px_rgba(224,231,255,0.7)] border-2 border-indigo-100" : "bg-gradient-to-br from-yellow-100 to-amber-400 shadow-[0_0_100px_rgba(253,224,71,0.9)]"}`}
       >
         {isNight && (
           <div className="absolute top-4 right-6 w-12 h-12 bg-indigo-900/40 rounded-full blur-[2px]" />
@@ -735,21 +925,25 @@ function GroundedRealisticFarmEnvironment({ isLogin }: { isLogin: boolean }) {
         className="absolute bottom-[5%] left-[10%] w-[120%] h-[35%] rounded-[70%_50%_0_0] shadow-[inset_0_-20px_30px_rgba(0,0,0,0.1),0_-10px_20px_rgba(0,0,0,0.05)] border-t border-white/10"
       />
 
-      {/* Planted Trees on Mid Hills */}
+      {/* Planted Trees and House on Mid Hills */}
       <RealisticTree
-        style={{ left: "15%", bottom: "25%", transform: "scale(0.6)" }}
+        style={{ left: "12%", bottom: "28%", transform: "scale(0.6)" }}
         isNight={isNight}
       />
       <RealisticTree
-        style={{ right: "20%", bottom: "20%", transform: "scale(0.85)" }}
+        style={{ left: "25%", bottom: "22%", transform: "scale(0.85)" }}
+        isNight={isNight}
+      />
+      <RealisticHouse
+        style={{ right: "12%", bottom: "18%", transform: "scale(1.2)" }}
         isNight={isNight}
       />
       <RealisticTree
-        style={{ right: "-5%", bottom: "15%", transform: "scale(1.1)" }}
+        style={{ right: "32%", bottom: "16%", transform: "scale(1.1)" }}
         isNight={isNight}
       />
       <RealisticTree
-        style={{ left: "35%", bottom: "12%", transform: "scale(0.9)" }}
+        style={{ right: "-2%", bottom: "12%", transform: "scale(0.9)" }}
         isNight={isNight}
       />
 
@@ -827,8 +1021,12 @@ function GroundedRealisticFarmEnvironment({ isLogin }: { isLogin: boolean }) {
 
 export function VegetableHero({
   variant = "login",
+  children,
+  fullScreen = false,
 }: {
   variant?: "login" | "signup";
+  children?: React.ReactNode;
+  fullScreen?: boolean;
 }) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const isLogin = variant === "login";
@@ -848,11 +1046,22 @@ export function VegetableHero({
   }, []);
 
   return (
-    <div className="relative w-full h-full min-h-[800px] flex flex-col items-center justify-center overflow-hidden rounded-[1.5rem] shadow-soft-xl">
+    <div
+      className={`relative flex flex-col items-center justify-center overflow-hidden shadow-soft-xl ${fullScreen ? "w-full h-full rounded-none shadow-none" : "w-full h-full min-h-[800px] rounded-[1.5rem]"}`}
+    >
       <GroundedRealisticFarmEnvironment isLogin={isLogin} />
 
+      {/* Children Content Layer (like the auth form) */}
+      {children && (
+        <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-auto">
+          {children}
+        </div>
+      )}
+
       {/* Characters Group - Firmly attached to the grassy plain foreground via absolute positioning */}
-      <div className="absolute bottom-[20%] left-0 w-full h-[300px] z-30 pointer-events-none flex justify-center items-end">
+      <div
+        className={`absolute bottom-0 left-0 w-full h-[300px] pointer-events-none flex justify-center items-end pb-8 z-30`}
+      >
         <AnimatePresence mode="wait">
           {isLogin ? (
             <motion.div
@@ -861,17 +1070,33 @@ export function VegetableHero({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
               transition={{ type: "spring", damping: 20, stiffness: 100 }}
-              className="relative w-[500px] h-full pointer-events-auto"
+              className={`relative h-full pointer-events-none ${fullScreen ? "w-full max-w-[1400px]" : "w-[500px]"}`}
             >
-              <div className="absolute left-[5%] bottom-[10%] z-20 scale-[0.8] hover:scale-105 transition-transform">
-                <RealisticEggplant mousePos={mousePos} />
-              </div>
-              <div className="absolute right-[0%] bottom-[5%] z-10 scale-[0.85] hover:scale-105 transition-transform">
-                <RealisticSteak mousePos={mousePos} />
-              </div>
-              <div className="absolute left-1/2 -translate-x-1/2 bottom-[-10%] z-30 scale-[1.05] hover:scale-105 transition-transform">
-                <RealisticTomato mousePos={mousePos} />
-              </div>
+              {fullScreen ? (
+                <>
+                  <div className="hidden sm:block absolute left-[8%] md:left-[10%] bottom-[8%] z-20 scale-[0.65] md:scale-[0.75] pointer-events-auto hover:scale-[0.8] transition-transform">
+                    <RealisticEggplant mousePos={mousePos} />
+                  </div>
+                  <div className="absolute left-[3%] sm:left-[18%] md:left-[21%] bottom-[-5%] z-30 scale-[0.75] md:scale-[0.85] pointer-events-auto hover:scale-[0.9] transition-transform">
+                    <RealisticTomato mousePos={mousePos} />
+                  </div>
+                  <div className="hidden sm:block absolute right-[8%] md:right-[12%] bottom-[6%] z-20 scale-[0.65] md:scale-[0.75] pointer-events-auto hover:scale-[0.8] transition-transform">
+                    <RealisticSteak mousePos={mousePos} />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="absolute left-[5%] bottom-[2%] z-20 scale-[0.6] pointer-events-auto hover:scale-[0.65] transition-transform">
+                    <RealisticEggplant mousePos={mousePos} />
+                  </div>
+                  <div className="absolute right-[5%] bottom-[5%] z-10 scale-[0.6] pointer-events-auto hover:scale-[0.65] transition-transform">
+                    <RealisticSteak mousePos={mousePos} />
+                  </div>
+                  <div className="absolute left-1/2 -translate-x-1/2 bottom-[-8%] z-30 scale-[0.75] pointer-events-auto hover:scale-[0.8] transition-transform">
+                    <RealisticTomato mousePos={mousePos} />
+                  </div>
+                </>
+              )}
             </motion.div>
           ) : (
             <motion.div
@@ -880,17 +1105,36 @@ export function VegetableHero({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -30 }}
               transition={{ type: "spring", damping: 20, stiffness: 100 }}
-              className="relative w-[500px] h-full pointer-events-auto"
+              className={`relative h-full pointer-events-none ${fullScreen ? "w-full max-w-[1400px]" : "w-[500px]"}`}
             >
-              <div className="absolute left-[-2%] bottom-[8%] z-10 scale-[0.8] hover:scale-105 transition-transform">
-                <RealisticChickenLeg mousePos={mousePos} />
-              </div>
-              <div className="absolute right-[8%] bottom-[12%] z-20 scale-[0.9] hover:scale-105 transition-transform">
-                <RealisticOrange mousePos={mousePos} />
-              </div>
-              <div className="absolute left-1/2 -translate-x-1/2 bottom-[-10%] z-30 scale-[1.1] hover:scale-105 transition-transform">
-                <RealisticAvocado mousePos={mousePos} />
-              </div>
+              {fullScreen ? (
+                <>
+                  <div className="hidden sm:block absolute left-[2%] md:left-[6%] bottom-[5%] z-10 scale-[0.6] md:scale-[0.75] pointer-events-auto hover:scale-[0.8] transition-transform">
+                    <RealisticApple mousePos={mousePos} />
+                  </div>
+                  <div className="hidden sm:block absolute left-[12%] md:left-[14%] bottom-[8%] z-20 scale-[0.65] md:scale-[0.8] pointer-events-auto hover:scale-[0.85] transition-transform">
+                    <RealisticChickenLeg mousePos={mousePos} />
+                  </div>
+                  <div className="absolute left-[5%] sm:left-[20%] md:left-[23%] bottom-[-5%] z-30 scale-[0.8] md:scale-[0.9] pointer-events-auto hover:scale-[0.95] transition-transform">
+                    <RealisticAvocado mousePos={mousePos} />
+                  </div>
+                  <div className="hidden sm:block absolute right-[10%] md:right-[14%] bottom-[8%] z-20 scale-[0.65] md:scale-[0.8] pointer-events-auto hover:scale-[0.85] transition-transform">
+                    <RealisticOrange mousePos={mousePos} />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="absolute left-[2%] bottom-[6%] z-10 scale-[0.6] pointer-events-auto hover:scale-[0.65] transition-transform">
+                    <RealisticChickenLeg mousePos={mousePos} />
+                  </div>
+                  <div className="absolute right-[12%] bottom-[8%] z-20 scale-[0.7] pointer-events-auto hover:scale-[0.75] transition-transform">
+                    <RealisticOrange mousePos={mousePos} />
+                  </div>
+                  <div className="absolute left-1/2 -translate-x-1/2 bottom-[-8%] z-30 scale-[0.8] pointer-events-auto hover:scale-[0.85] transition-transform">
+                    <RealisticAvocado mousePos={mousePos} />
+                  </div>
+                </>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
