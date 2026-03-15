@@ -136,10 +136,32 @@
     backface-visibility: hidden;
   }
 
-  /* Lazy-render off-screen sections */
+  /* Lazy-render off-screen sections - but be careful with height on mobile */
   section {
     content-visibility: auto;
-    contain-intrinsic-size: 0 400px;
+    contain-intrinsic-size: 0 500px;
+  }
+
+  @media (max-width: 640px) {
+    section {
+      contain-intrinsic-size: 0 400px;
+    }
+    
+    /* Global blur reduction for mobile performance */
+    .backdrop-blur-sm, .backdrop-blur-md, .backdrop-blur-lg, .backdrop-blur-xl, .backdrop-blur-2xl, .backdrop-blur-3xl {
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+      background-color: rgba(255, 255, 255, 0.95) !important;
+    }
+    
+    .dark .backdrop-blur-sm, .dark .backdrop-blur-md, .dark .backdrop-blur-lg, .dark .backdrop-blur-xl, .dark .backdrop-blur-2xl, .dark .backdrop-blur-3xl {
+      background-color: rgba(30, 30, 30, 0.9) !important;
+    }
+    
+    .blur-xl, .blur-2xl, .blur-3xl {
+      filter: blur(20px) !important; /* Cap blur for mobile */
+      opacity: 0.3 !important;
+    }
   }
 
   /* Remove contain from hero so it renders immediately */

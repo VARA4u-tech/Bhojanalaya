@@ -162,9 +162,9 @@ export default function HomePage() {
               >
                 {/* Icon bubble */}
                 <div
-                  className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300 ${feature.color} ${feature.hoverColor}`}
+                  className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center mb-4 sm:mb-5 transition-all duration-300 ${feature.color} ${feature.hoverColor}`}
                 >
-                  <feature.icon className="h-7 w-7 transition-colors duration-300" />
+                  <feature.icon className="h-6 w-6 sm:h-7 sm:w-7 transition-colors duration-300" />
                 </div>
                 <h3 className="font-heading text-lg sm:text-xl mb-2 text-foreground">
                   {feature.title}
@@ -184,9 +184,9 @@ export default function HomePage() {
       {/* ── Popular Dishes Showcase ───────────────────────────────────────── */}
       <div className="relative">
         <PopularDishesShowcase />
-        {/* Corner blobs */}
-        <div className="absolute top-0 left-0 w-40 h-40 bg-primary/5 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-40 h-40 bg-secondary/8 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl pointer-events-none" />
+        {/* Corner blobs - hidden on mobile for performance */}
+        <div className="hidden sm:block absolute top-0 left-0 w-40 h-40 bg-primary/5 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl pointer-events-none" />
+        <div className="hidden sm:block absolute bottom-0 right-0 w-40 h-40 bg-secondary/8 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl pointer-events-none" />
       </div>
 
       {/* ── CTA Section — "See You There!" style ─────────────────────────── */}
@@ -239,9 +239,9 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Decorative glows */}
-            <div className="absolute top-0 right-0 w-72 h-72 bg-primary-foreground/8 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-56 h-56 bg-primary-foreground/8 rounded-full blur-3xl" />
+            {/* Decorative glows - hidden on mobile for performance */}
+            <div className="hidden sm:block absolute top-0 right-0 w-72 h-72 bg-primary-foreground/8 rounded-full blur-3xl" />
+            <div className="hidden sm:block absolute bottom-0 left-0 w-56 h-56 bg-primary-foreground/8 rounded-full blur-3xl" />
           </motion.div>
         </div>
       </section>

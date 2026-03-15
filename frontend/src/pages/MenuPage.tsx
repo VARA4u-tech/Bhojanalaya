@@ -1257,7 +1257,18 @@ export default function MenuPage() {
 
   const { toggleCart } = useUIStore();
   const { toast } = useToast(); // Initialize useToast
+  const navigate = useNavigate();
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Filter items logic
   // Pre-built Set for O(1) veg lookup
   const VEG_SET = useMemo(
     () =>
@@ -1741,9 +1752,9 @@ export default function MenuPage() {
         {isLoading ? (
           <MenuGridSkeleton count={6} />
         ) : (
-          <AnimatePresence mode="popLayout">
+          <AnimatePresence mode="popLayout" initial={false}>
             <motion.div
-              layout
+              layout={!isMobile}
               className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-24 lg:mb-0"
               initial="hidden"
               animate="show"
@@ -1752,7 +1763,7 @@ export default function MenuPage() {
                 show: {
                   opacity: 1,
                   transition: {
-                    staggerChildren: 0.05,
+                    staggerChildren: isMobile ? 0 : 0.05,
                   },
                 },
               }}
