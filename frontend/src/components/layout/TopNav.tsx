@@ -116,7 +116,7 @@ export function TopNav() {
           <div className="h-4 w-[1px] bg-border mx-0.5 sm:mx-1 hidden xs:block" />
 
           <div className="flex items-center gap-1">
-            <Link to="/profile" className="hidden md:block">
+            <Link to="/dashboard" className="hidden md:block">
               <Button
                 variant="ghost"
                 size="icon"

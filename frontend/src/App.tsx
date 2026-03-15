@@ -7,6 +7,7 @@ import {
   BrowserRouter,
   Routes,
   Route,
+  Navigate,
   useLocation,
   Outlet,
 } from "react-router-dom";
@@ -95,13 +96,15 @@ const AppRoutes = () => {
             }
           />
           <Route
-            path="/profile"
+            path="/dashboard"
             element={
               <PageTransition>
                 <ProfilePage />
               </PageTransition>
             }
           />
+          {/* Redirect legacy profile path to new dashboard */}
+          <Route path="/profile" element={<Navigate to="/dashboard" replace />} />
           <Route
             path="/about"
             element={

@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { AuthError } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 
 export interface User {
@@ -24,10 +25,10 @@ interface UserState {
     preferences: UserPreferences;
 
     // Actions
-    loginWithMagicLink: (email: string) => Promise<{ error: any }>;
-    loginWithPassword: (email: string, password: string) => Promise<{ error: any }>;
-    signUpWithPassword: (email: string, password: string, name: string) => Promise<{ error: any }>;
-    loginWithGoogle: () => Promise<{ error: any }>;
+    loginWithMagicLink: (email: string) => Promise<{ error: AuthError | null }>;
+    loginWithPassword: (email: string, password: string) => Promise<{ error: AuthError | null }>;
+    signUpWithPassword: (email: string, password: string, name: string) => Promise<{ error: AuthError | null }>;
+    loginWithGoogle: () => Promise<{ error: AuthError | null }>;
     logout: () => Promise<void>;
     updatePreferences: (preferences: Partial<UserPreferences>) => void;
     checkSession: () => Promise<void>;
@@ -82,7 +83,7 @@ export const useUserStore = create<UserState>()(
                 const { error } = await supabase.auth.signInWithOAuth({
                     provider: 'google',
                     options: {
-                        redirectTo: window.location.origin
+                        redirectTo: `${window.location.origin}/dashboard`
                     }
                 });
                 return { error };

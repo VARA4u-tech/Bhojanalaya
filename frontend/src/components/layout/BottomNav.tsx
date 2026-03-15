@@ -7,7 +7,7 @@ const navItems = [
     { href: "/", icon: Home, label: "Home" },
     { href: "/menu", icon: UtensilsCrossed, label: "Menu" },
     { href: "/orders", icon: ClipboardList, label: "Orders" },
-    { href: "/profile", icon: User, label: "Profile" },
+    { href: "/dashboard", icon: User, label: "Dashboard" },
 ];
 
 export function BottomNav() {
@@ -23,7 +23,7 @@ export function BottomNav() {
                             <Link
                                 to={item.href}
                                 className={cn(
-                                    "relative flex flex-col items-center justify-center gap-1 xs:gap-1.5 px-1.5 xs:px-2 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl transition-all duration-300 min-w-[60px] xs:min-w-[68px] sm:min-w-[76px]",
+                                    "relative flex flex-col items-center justify-center gap-1 xs:gap-1.5 px-0.5 xs:px-2 sm:px-4 py-1.5 sm:py-2.5 rounded-xl sm:rounded-2xl transition-all duration-300 min-w-[50px] xs:min-w-[68px] sm:min-w-[76px]",
                                     isActive ? "text-primary w-full" : "text-muted-foreground"
                                 )}
                                 aria-label={item.label}

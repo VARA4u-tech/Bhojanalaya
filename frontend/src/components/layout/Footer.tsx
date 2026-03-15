@@ -13,6 +13,7 @@ import {
   Leaf,
   Sparkles,
   Github,
+  LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -45,12 +46,12 @@ const footerLinks = [
       { label: "Browse Menu", href: "/menu" },
       { label: "Book Table", href: "/booking" },
       { label: "View Orders", href: "/orders" },
-      { label: "User Profile", href: "/profile" },
+      { label: "User Dashboard", href: "/dashboard" },
     ],
   },
 ];
 
-const SocialIcon = ({ icon: Icon, href }: { icon: any; href: string }) => (
+const SocialIcon = ({ icon: Icon, href }: { icon: LucideIcon; href: string }) => (
   <a
     href={href}
     className="w-10 h-10 rounded-full flex items-center justify-center bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all duration-300 border border-primary/20"

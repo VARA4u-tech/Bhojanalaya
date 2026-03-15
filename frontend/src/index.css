@@ -230,6 +230,51 @@
   .status-cancelled {
     @apply bg-[hsl(var(--status-cancelled)/0.15)] text-[hsl(0,84%,45%)];
   }
+
+  .btn-premium {
+    @apply relative overflow-hidden transition-all duration-300;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary)) 0%,
+      hsl(168, 72%, 18%) 100%
+    );
+    box-shadow:
+      0 10px 25px -5px rgba(22, 101, 52, 0.4),
+      inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  }
+  .btn-premium::before {
+    content: "";
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] transition-transform duration-700;
+  }
+  .btn-premium:hover::before {
+    @apply translate-x-[100%];
+  }
+
+  /* Glassmorphism v2 */
+  .glass-premium {
+    @apply backdrop-blur-3xl bg-slate-900/60 border border-white/10 shadow-2xl;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .glass-premium::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      110deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    pointer-events: none;
+  }
+
+  /* Aura Background */
+  .aura-blob {
+    @apply absolute rounded-full blur-[120px] mix-blend-screen opacity-50;
+    pointer-events: none;
+  }
 }
 
 @layer utilities {

@@ -35,7 +35,7 @@ export default function ProfilePage() {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleReorder = (items: any[]) => {
+  const handleReorder = (items: { id: number; name: string; price: number; quantity: number; image?: string }[]) => {
     addBulkItems(items);
     toast({
       title: "Added to Cart",
@@ -61,14 +61,9 @@ export default function ProfilePage() {
 
   if (!isAuthenticated) {
     return (
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={containerVariants}
-        className="container py-20 flex items-center justify-center min-h-[60vh]"
-      >
+      <div className="w-full">
         <LoginView />
-      </motion.div>
+      </div>
     );
   }
 
