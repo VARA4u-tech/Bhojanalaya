@@ -4,9 +4,24 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CustomerLayout } from "@/components/layout/CustomerLayout";
 import { Button } from "@/components/ui/button";
 import { StatusBadge, OrderStatus } from "@/components/ui/status-badge";
-import { Clock, MapPin, ChefHat, Bell, Check, RefreshCw, XCircle, ArrowRight } from "lucide-react";
+import {
+  Clock,
+  MapPin,
+  ChefHat,
+  Bell,
+  Check,
+  RefreshCw,
+  XCircle,
+  ArrowRight,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useOrderStore, useCartStore, Order, OrderItem, useRestaurantStore } from "@/store";
+import {
+  useOrderStore,
+  useCartStore,
+  Order,
+  OrderItem,
+  useRestaurantStore,
+} from "@/store";
 import { OrderListSkeleton } from "@/components/skeletons/OrderCardSkeleton";
 import { ErrorBoundary } from "@/components/error/ErrorBoundary";
 import { ErrorFallback } from "@/components/error/ErrorFallback";
@@ -18,7 +33,11 @@ import { useUserStore } from "@/store/userStore";
 import { EmailPreviewDialog } from "@/components/order/EmailPreviewDialog";
 import { Mail } from "lucide-react";
 
-const orderSteps: { status: OrderStatus; label: string; icon: React.ElementType }[] = [
+const orderSteps: {
+  status: OrderStatus;
+  label: string;
+  icon: React.ElementType;
+}[] = [
   { status: "waiting", label: "Order Placed", icon: Clock },
   { status: "confirmed", label: "Confirmed", icon: Check },
   { status: "preparing", label: "Preparing", icon: ChefHat },
@@ -49,7 +68,8 @@ export default function OrderStatusPage() {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [emailPreviewOpen, setEmailPreviewOpen] = useState(false);
 
-  const { orders, activeOrder, setActiveOrder, updateOrderStatus } = useOrderStore();
+  const { orders, activeOrder, setActiveOrder, updateOrderStatus } =
+    useOrderStore();
   const { getRestaurantById } = useRestaurantStore();
   const { addBulkItems } = useCartStore();
   const { toast } = useToast();
@@ -58,12 +78,18 @@ export default function OrderStatusPage() {
 
   // Use active order or show mock data
   const displayOrder = activeOrder || (mockOrder as unknown as Order);
-  const total = displayOrder.items?.reduce((sum: number, item: OrderItem) => sum + item.price * item.quantity, 0) || 0;
-  const canCancelOrder = displayOrder && (displayOrder.status === 'waiting' || displayOrder.status === 'confirmed');
+  const total =
+    displayOrder.items?.reduce(
+      (sum: number, item: OrderItem) => sum + item.price * item.quantity,
+      0,
+    ) || 0;
+  const canCancelOrder =
+    displayOrder &&
+    (displayOrder.status === "waiting" || displayOrder.status === "confirmed");
 
   // Scroll to top on mount to prevent glitchy transitions
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
 
   // Simulate loading
@@ -85,23 +111,25 @@ export default function OrderStatusPage() {
 
   useEffect(() => {
     if (socket && displayOrder?.id) {
-      socket.emit('join_order', displayOrder.id);
+      socket.emit("join_order", displayOrder.id);
 
-      socket.on('order_status_updated', (data: { status: OrderStatus }) => {
-        console.log('Received status update:', data);
+      socket.on("order_status_updated", (data: { status: OrderStatus }) => {
+        console.log("Received status update:", data);
 
         // Find the index of the new status
-        const newStepIndex = orderSteps.findIndex(step => step.status === data.status);
+        const newStepIndex = orderSteps.findIndex(
+          (step) => step.status === data.status,
+        );
         if (newStepIndex !== -1) {
           setCurrentStep(newStepIndex);
           // You might also want to update the store here
-          // updateOrderStatus(displayOrder.id, data.status); 
+          // updateOrderStatus(displayOrder.id, data.status);
         }
       });
 
       return () => {
-        socket.emit('leave_order', displayOrder.id);
-        socket.off('order_status_updated');
+        socket.emit("leave_order", displayOrder.id);
+        socket.off("order_status_updated");
       };
     }
   }, [socket, displayOrder?.id]);
@@ -114,7 +142,7 @@ export default function OrderStatusPage() {
       title: "Added to Cart",
       description: "Previous items have been added to your cart.",
     });
-    navigate('/menu');
+    navigate("/menu");
   };
 
   // Simulate status change
@@ -132,16 +160,19 @@ export default function OrderStatusPage() {
     if (!displayOrder) return;
 
     // Use a small delay for cancellation too
-    await updateOrderStatus(displayOrder.id, 'cancelled');
+    await updateOrderStatus(displayOrder.id, "cancelled");
 
     toast({
-      title: "Order Cancelled",
-      description: `Refund of ₹${(displayOrder.total * 0.8).toFixed(2)} (80% of total) will be processed within 3-5 business days.`,
+      title: "Order Cancelled! 🚨",
+      description: `Refund of ₹${(displayOrder.total * 0.8).toFixed(2)} initiated. Returning to menu...`,
     });
     setCancelDialogOpen(false);
+    
+    // Redirect to menu after a short delay so they see the toast
+    setTimeout(() => {
+      navigate('/menu');
+    }, 1500);
   };
-
-
 
   return (
     <>
@@ -152,7 +183,9 @@ export default function OrderStatusPage() {
           <p className="text-muted-foreground">Track your order in real-time</p>
         </div>
 
-        <ErrorBoundary fallback={<ErrorFallback title="Failed to load orders" />}>
+        <ErrorBoundary
+          fallback={<ErrorFallback title="Failed to load orders" />}
+        >
           {isLoading ? (
             <OrderListSkeleton count={1} />
           ) : !activeOrder && orders.length === 0 ? (
@@ -162,7 +195,7 @@ export default function OrderStatusPage() {
               icon={Clock}
               action={{
                 label: "Browse Menu",
-                onClick: () => window.location.href = '/menu'
+                onClick: () => (window.location.href = "/menu"),
               }}
             />
           ) : (
@@ -177,7 +210,9 @@ export default function OrderStatusPage() {
 
                 <div className="flex items-center justify-between mb-4 relative z-10">
                   <div>
-                    <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">Order Tracking</div>
+                    <div className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-1">
+                      Order Tracking
+                    </div>
                     <div className="font-heading font-bold text-2xl">
                       {displayOrder.orderNumber || displayOrder.id}
                     </div>
@@ -190,14 +225,17 @@ export default function OrderStatusPage() {
                     <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
                       <MapPin className="h-4 w-4" />
                     </div>
-                    <span>Table {displayOrder.tableNumber || 'N/A'}</span>
+                    <span>Table {displayOrder.tableNumber || "N/A"}</span>
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
                       <Clock className="h-4 w-4" />
                     </div>
                     <span>
-                      {new Date(displayOrder.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {new Date(displayOrder.createdAt).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </span>
                   </div>
                 </div>
@@ -213,7 +251,8 @@ export default function OrderStatusPage() {
                 <div className="flex items-center justify-between mb-8">
                   <h2 className="font-heading text-h3">Order Progress</h2>
                   <div className="text-sm font-medium text-primary bg-primary/10 px-3 py-1 rounded-full">
-                    {Math.round((currentStep / (orderSteps.length - 1)) * 100)}% Complete
+                    {Math.round((currentStep / (orderSteps.length - 1)) * 100)}%
+                    Complete
                   </div>
                 </div>
 
@@ -223,9 +262,11 @@ export default function OrderStatusPage() {
                     <motion.div
                       className="absolute top-0 left-0 w-full bg-primary origin-top"
                       initial={{ scaleY: 0 }}
-                      animate={{ scaleY: currentStep / (orderSteps.length - 1) }}
+                      animate={{
+                        scaleY: currentStep / (orderSteps.length - 1),
+                      }}
                       transition={{ duration: 1, ease: "easeOut" }}
-                      style={{ height: '100%' }}
+                      style={{ height: "100%" }}
                     />
                   </div>
 
@@ -244,16 +285,20 @@ export default function OrderStatusPage() {
                           transition={{ delay: 0.2 + index * 0.1 }}
                           className={cn(
                             "relative flex items-start gap-6 transition-all duration-300",
-                            isPending && "opacity-40"
+                            isPending && "opacity-40",
                           )}
                         >
                           {/* Icon Circle */}
-                          <div className={cn(
-                            "relative z-10 w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 shrink-0 shadow-sm",
-                            isCompleted && "bg-status-ready text-white scale-90",
-                            isCurrent && "bg-primary text-white shadow-glow scale-110",
-                            isPending && "bg-muted text-muted-foreground"
-                          )}>
+                          <div
+                            className={cn(
+                              "relative z-10 w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 shrink-0 shadow-sm",
+                              isCompleted &&
+                                "bg-status-ready text-white scale-90",
+                              isCurrent &&
+                                "bg-primary text-white shadow-glow scale-110",
+                              isPending && "bg-muted text-muted-foreground",
+                            )}
+                          >
                             <AnimatePresence mode="wait">
                               {isCompleted ? (
                                 <motion.div
@@ -271,7 +316,12 @@ export default function OrderStatusPage() {
                                   animate={{ scale: 1 }}
                                   exit={{ scale: 0 }}
                                 >
-                                  <step.icon className={cn("h-6 w-6", isCurrent && "animate-pulse")} />
+                                  <step.icon
+                                    className={cn(
+                                      "h-6 w-6",
+                                      isCurrent && "animate-pulse",
+                                    )}
+                                  />
                                 </motion.div>
                               )}
                             </AnimatePresence>
@@ -279,22 +329,22 @@ export default function OrderStatusPage() {
 
                           {/* Content */}
                           <div className="flex-1 pt-1">
-                            <div className={cn(
-                              "font-heading text-lg font-bold transition-colors duration-300",
-                              isCurrent ? "text-primary" : "text-foreground"
-                            )}>
+                            <div
+                              className={cn(
+                                "font-heading text-lg font-bold transition-colors duration-300",
+                                isCurrent ? "text-primary" : "text-foreground",
+                              )}
+                            >
                               {step.label}
                             </div>
                             <div className="text-sm text-muted-foreground mt-0.5">
-                              {isCurrent ? (
-                                step.status === "preparing"
+                              {isCurrent
+                                ? step.status === "preparing"
                                   ? `Cooking your delicious meal... (${displayOrder.estimatedTime || mockOrder.estimatedTime} mins left)`
                                   : "Processing your order"
-                              ) : isCompleted ? (
-                                "Requirement met"
-                              ) : (
-                                "Coming up next"
-                              )}
+                                : isCompleted
+                                  ? "Requirement met"
+                                  : "Coming up next"}
                             </div>
                           </div>
                         </motion.div>
@@ -329,7 +379,12 @@ export default function OrderStatusPage() {
                       variant="outline"
                       className="w-full h-12 rounded-xl border-dashed hover:border-solid transition-all"
                     >
-                      <RefreshCw className={cn("h-4 w-4 mr-2", isAnimating && "animate-spin")} />
+                      <RefreshCw
+                        className={cn(
+                          "h-4 w-4 mr-2",
+                          isAnimating && "animate-spin",
+                        )}
+                      />
                       Simulate Status Update
                     </Button>
                   ) : (
@@ -365,28 +420,41 @@ export default function OrderStatusPage() {
                 <h2 className="font-heading text-h3">Items Summary</h2>
                 {displayOrder?.restaurantId && (
                   <p className="text-muted-foreground text-sm mb-6 flex items-center gap-2">
-                    from <span className="font-bold text-primary">{getRestaurantById(displayOrder.restaurantId)?.name || 'Restaurant'}</span>
+                    from{" "}
+                    <span className="font-bold text-primary">
+                      {getRestaurantById(displayOrder.restaurantId)?.name ||
+                        "Restaurant"}
+                    </span>
                   </p>
                 )}
 
                 <div className="space-y-5 mb-8">
                   {displayOrder.items?.map((item: OrderItem, index: number) => (
-                    <div key={index} className="flex items-center justify-between group">
+                    <div
+                      key={index}
+                      className="flex items-center justify-between group"
+                    >
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center font-bold text-primary group-hover:scale-110 transition-transform">
                           {item.quantity}
                         </div>
                         <div className="font-medium text-lg">{item.name}</div>
                       </div>
-                      <span className="font-bold text-lg">₹{(item.price * item.quantity).toFixed(2)}</span>
+                      <span className="font-bold text-lg">
+                        ₹{(item.price * item.quantity).toFixed(2)}
+                      </span>
                     </div>
                   ))}
                 </div>
 
                 <div className="border-t border-border pt-6 mt-6">
                   <div className="flex items-center justify-between">
-                    <span className="font-heading font-bold text-xl">Grand Total</span>
-                    <span className="font-heading font-bold text-2xl text-primary">₹{total.toFixed(2)}</span>
+                    <span className="font-heading font-bold text-xl">
+                      Grand Total
+                    </span>
+                    <span className="font-heading font-bold text-2xl text-primary">
+                      ₹{total.toFixed(2)}
+                    </span>
                   </div>
                 </div>
               </motion.div>
@@ -401,7 +469,7 @@ export default function OrderStatusPage() {
           orderTotal={displayOrder?.total || 0}
           refundAmount={(displayOrder?.total || 0) * 0.8}
         />
-        <EmailPreviewDialog 
+        <EmailPreviewDialog
           open={emailPreviewOpen}
           onOpenChange={setEmailPreviewOpen}
           order={displayOrder}
