@@ -18,6 +18,7 @@ import {
   ShoppingBag,
   Calendar,
   ChevronRight,
+  LayoutDashboard,
 } from "lucide-react";
 
 import { useOrderStore, useBookingStore, useCartStore } from "@/store";
@@ -182,6 +183,20 @@ export default function ProfilePage() {
               Quick Actions
             </h3>
             <div className="space-y-2">
+              {user?.role === "admin" && (
+                <button
+                  onClick={() => navigate("/admin")}
+                  className="flex items-center justify-between w-full p-3 rounded-xl bg-primary/5 border border-primary/20 hover:bg-primary/10 transition-colors group mb-4"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white">
+                      <LayoutDashboard className="h-4 w-4" />
+                    </div>
+                    <span className="text-sm font-bold text-primary">Admin Dashboard</span>
+                  </div>
+                  <ChevronRight className="h-4 w-4 text-primary group-hover:translate-x-1 transition-transform" />
+                </button>
+              )}
               {[
                 { label: "Saved Addresses", icon: MapPin },
                 { label: "Payment Methods", icon: CreditCard },

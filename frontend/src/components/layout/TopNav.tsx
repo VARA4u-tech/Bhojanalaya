@@ -1,11 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { UtensilsCrossed, Store, ShoppingCart, User, Bell } from "lucide-react";
+import { UtensilsCrossed, Store, ShoppingCart, User, Bell, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useRestaurantStore } from "@/store";
 import { useUIStore } from "@/store/uiStore";
 import { useCartStore } from "@/store/cartStore";
+import { useUserStore } from "@/store/userStore";
 import { RestaurantSelector } from "@/components/restaurant/RestaurantSelector";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -23,6 +24,7 @@ export function TopNav() {
   const { selectedRestaurant } = useRestaurantStore();
   const { toggleCart } = useUIStore();
   const { getItemCount } = useCartStore();
+  const { user } = useUserStore();
 
   const cartItemCount = getItemCount();
 
@@ -126,6 +128,20 @@ export function TopNav() {
                 <div className="absolute top-2 right-2 h-2 w-2 rounded-full bg-secondary opacity-0 group-hover:opacity-100 transition-opacity" />
               </Button>
             </Link>
+
+            {user?.role === "admin" && (
+              <Link to="/admin" className="hidden md:block">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="rounded-xl h-9 border-primary/20 bg-primary/5 text-primary font-bold hover:bg-primary hover:text-white transition-all gap-1.5"
+                >
+                  <LayoutDashboard className="h-3.5 w-3.5" />
+                  Admin
+                </Button>
+              </Link>
+            )}
+
             <motion.div whileTap={{ scale: 0.9 }}>
               <Button
                 variant="ghost"

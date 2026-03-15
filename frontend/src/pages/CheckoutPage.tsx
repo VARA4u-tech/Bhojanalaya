@@ -159,11 +159,14 @@ export default function CheckoutPage() {
     }));
 
     const processLocalOrder = () => {
+      // Get restaurantId from the first item in cart (assuming one restaurant per cart)
+      const cartRestaurantId = items[0]?.restaurantId || selectedRestaurant?.id;
+
       const newOrder = createOrder(
         orderItems,
         tableNumber,
         specialNotes,
-        selectedRestaurant?.id,
+        cartRestaurantId,
         selectedRestaurant?.name,
       );
 

@@ -28,6 +28,15 @@ import ProjectDocsPage from "./pages/ProjectDocsPage";
 import HelpCenterPage from "./pages/HelpCenterPage";
 import NotFound from "./pages/NotFound";
 import MenuItemDemo from "./pages/demo/MenuItemDemo";
+
+// Admin Pages
+import { AdminProtectedRoute } from "./components/admin/AdminProtectedRoute";
+import { AdminLayout } from "./components/admin/AdminLayout";
+import AdminOverview from "./pages/admin/AdminOverview";
+import AdminOrders from "./pages/admin/AdminOrders";
+import AdminMenu from "./pages/admin/AdminMenu";
+import AdminBookings from "./pages/admin/AdminBookings";
+import AdminRestaurantList from "./pages/admin/AdminRestaurantList";
 import { useUserStore } from "@/store/userStore";
 
 import { CustomerLayout } from "@/components/layout/CustomerLayout";
@@ -169,6 +178,26 @@ const AppRoutes = () => {
               </PageTransition>
             }
           />
+        </Route>
+
+        {/* Admin Routes */}
+        <Route
+          path="/admin"
+          element={
+            <AdminProtectedRoute>
+              <AdminLayout>
+                <Outlet />
+              </AdminLayout>
+            </AdminProtectedRoute>
+          }
+        >
+          <Route index element={<AdminRestaurantList />} />
+          <Route path=":restaurantId" element={<AdminOverview />} />
+          <Route path=":restaurantId/orders" element={<AdminOrders />} />
+          <Route path=":restaurantId/menu" element={<AdminMenu />} />
+          <Route path=":restaurantId/bookings" element={<AdminBookings />} />
+          <Route path=":restaurantId/customers" element={<div className="p-8 text-center text-slate-500 font-bold">Customer Management (Coming Soon)</div>} />
+          <Route path=":restaurantId/settings" element={<div className="p-8 text-center text-slate-500 font-bold">Admin Settings (Coming Soon)</div>} />
         </Route>
 
         {/* Catch-all */}
