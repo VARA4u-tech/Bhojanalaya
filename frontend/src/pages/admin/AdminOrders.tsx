@@ -16,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useRestaurantStore } from "@/store/restaurantStore";
 import { useOrderStore, OrderStatus } from "@/store/orderStore";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/lib/supabase";
 
 // Local type for UI state if needed, but we'll use the store type
 type AdminOrderStatus = OrderStatus;
@@ -53,15 +55,47 @@ export default function AdminOrders() {
   const { restaurantId } = useParams();
   const { getRestaurantById } = useRestaurantStore();
   const { orders: storeOrders, updateOrderStatus, fetchOrders, subscribeToOrders, isLoading } = useOrderStore();
+  const { toast } = useToast();
   
   const restaurant = restaurantId ? getRestaurantById(restaurantId) : null;
   const [filter, setFilter] = useState<OrderStatus | "all">("all");
 
   useEffect(() => {
     fetchOrders();
-    const unsubscribe = subscribeToOrders();
-    return () => unsubscribe();
-  }, [fetchOrders, subscribeToOrders]);
+    
+    // Custom listener for real-time notifications in Admin
+    const channel = supabase
+      .channel('admin-order-notifications')
+      .on('postgres_changes', { 
+         event: 'UPDATE', 
+         table: 'orders',
+         schema: 'public',
+         filter: restaurantId ? `restaurant_id=eq.${restaurantId}` : undefined
+      }, (payload) => {
+        const newStatus = payload.new.status;
+        const orderNum = payload.new.order_number || payload.new.id.substring(0, 8);
+        
+        if (newStatus === 'cancelled') {
+           toast({
+             title: "Order Cancelled! 🚨",
+             description: `Order ${orderNum} has been cancelled by the customer.`,
+             variant: "destructive",
+           });
+        } else if (newStatus === 'waiting') {
+           toast({
+             title: "New Order! 🍽️",
+             description: `Order ${orderNum} just arrived.`,
+           });
+        }
+        
+        fetchOrders(); // Refresh the list
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchOrders, restaurantId, toast]);
 
   const combinedOrders = [
     ...storeOrders
@@ -126,7 +160,7 @@ export default function AdminOrders() {
         </div>
         
         <div className="flex items-center gap-2 overflow-x-auto w-full lg:w-auto pb-2 lg:pb-0 no-scrollbar">
-          {(["all", "waiting", "preparing", "ready", "served"] as const).map((s) => (
+          {(["all", "waiting", "preparing", "ready", "served", "cancelled"] as const).map((s) => (
              <button
                 key={s}
                 onClick={() => setFilter(s)}

@@ -323,9 +323,16 @@ export default function CheckoutPage() {
                     <Sparkles className="w-16 h-16" />
                   </div>
 
-                  <h3 className="font-heading text-xl sm:text-2xl text-primary mb-4 sm:mb-6">
-                    Order Summary
-                  </h3>
+                  <div className="mb-4 sm:mb-6">
+                    <h3 className="font-heading text-xl sm:text-2xl text-primary">
+                      Order Summary
+                    </h3>
+                    {selectedRestaurant && (
+                      <p className="text-xs font-serif italic text-muted-foreground mt-1">
+                        at <span className="text-secondary font-bold not-italic">{selectedRestaurant.name}</span>
+                      </p>
+                    )}
+                  </div>
 
                   {/* Items list */}
                   <div className="space-y-3 sm:space-y-4 mb-6 sm:mb-8 max-h-[250px] overflow-y-auto pr-2 scrollbar-hide">

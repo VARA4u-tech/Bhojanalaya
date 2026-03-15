@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { StatusBadge, OrderStatus } from "@/components/ui/status-badge";
 import { Clock, MapPin, ChefHat, Bell, Check, RefreshCw, XCircle, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useOrderStore, useCartStore, Order, OrderItem } from "@/store";
+import { useOrderStore, useCartStore, Order, OrderItem, useRestaurantStore } from "@/store";
 import { OrderListSkeleton } from "@/components/skeletons/OrderCardSkeleton";
 import { ErrorBoundary } from "@/components/error/ErrorBoundary";
 import { ErrorFallback } from "@/components/error/ErrorFallback";
@@ -46,6 +46,7 @@ export default function OrderStatusPage() {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
 
   const { orders, activeOrder, setActiveOrder, updateOrderStatus } = useOrderStore();
+  const { getRestaurantById } = useRestaurantStore();
   const { addBulkItems } = useCartStore();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -339,7 +340,12 @@ export default function OrderStatusPage() {
                 transition={{ delay: 0.2 }}
                 className="bg-card rounded-3xl p-8 shadow-soft relative overflow-hidden border border-border/50"
               >
-                <h2 className="font-heading text-h3 mb-6">Items Summary</h2>
+                <h2 className="font-heading text-h3">Items Summary</h2>
+                {displayOrder?.restaurantId && (
+                  <p className="text-muted-foreground text-sm mb-6 flex items-center gap-2">
+                    from <span className="font-bold text-primary">{getRestaurantById(displayOrder.restaurantId)?.name || 'Restaurant'}</span>
+                  </p>
+                )}
 
                 <div className="space-y-5 mb-8">
                   {displayOrder.items?.map((item: OrderItem, index: number) => (
