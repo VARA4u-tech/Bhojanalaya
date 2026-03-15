@@ -1,101 +1,112 @@
-# <div align="center"><img src="frontend/public/brand/logo.png" width="80" height="80" alt="Bhojanālaya Logo"><br>Bhojanālaya</div>
+# <div align="center"><img src="frontend/public/brand/logo.png" width="100" height="100" alt="Bhojanālaya Logo"><br>Bhojanālaya Direct</div>
 
 <div align="center">
-  <h3>✨ Skip the Queue, Book Food Instantly ✨</h3>
-  <p>A premium, full-stack restaurant ordering and table booking platform built for modern dining experiences.</p>
+  <h3>🌿 Premium Organic Dining • Instant Reservations • Seamless Ordering 🌿</h3>
+  <p><i>Empowering the next generation of dining technology with elegance and speed.</i></p>
 </div>
 
----
-
 <p align="center">
-  <a href="#🚀-getting-started">Getting Started</a> •
-  <a href="#✨-features">Features</a> •
-  <a href="#🛠️-tech-stack">Tech Stack</a> •
-  <a href="#🎨-design-highlights">Design</a> •
-  <a href="https://github.com/VARA4u-tech/bitebook-direct">Repository</a>
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" />
+  <img src="https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white" />
 </p>
 
 ---
 
-## 🏗️ Project Architecture
+## 📖 Introduction
 
-Bhojanālaya follows a clean, decoupled architecture with a focus on performance and real-time updates.
+**Bhojanālaya Direct** is a high-fidelity, full-stack digital solution for the modern organic restaurant ecosystem. It bridges the gap between traditional farm-to-table dining and modern convenience through a **Mobile-First, Poster-Style UX**. Featuring a streamlined **Google Authentication** flow and a dedicated **User Dashboard**, it offers diners a premium way to browse menus, book tables, and track orders in real-time.
 
-```mermaid
-graph TD
-    A[Frontend: React + Vite] <-->|Rest API / WebSockets| B[Backend: Express.js]
-    B <-->|PostgreSQL| C[Supabase DB / Auth]
-```
+---
 
-### 📂 Directory Structure
+## ✨ Key Features & Recent Updates
+
+### 🚀 Streamlined Authentication (New!)
+- **Google-Only Auth**: Zero-friction login and signup. No more passwords to remember.
+- **Attractive Poster UX**: Beautifully illustrated authentication views with high-fidelity organic SVG icons.
+- **One-Tap Access**: Secure, instant entry to the Bhojanālaya community.
+
+### 📊 User Dashboard
+- **Centralized View**: Orders, bookings, and profile preferences managed in one elegant workspace.
+- **Real-Time Tracking**: Monitor your meal from the kitchen to your table.
+- **Legacy Support**: Automatic redirection from `/profile` to ensured seamless transition.
+
+### 🍱 Premium Dining Experience
+- **Smart Menu**: Advanced filtering by cuisine, dietary needs, and price.
+- **Instant Booking**: Real-time table availability and capacity management.
+- **Glassmorphism UI**: High-end aesthetic with buttery-smooth **Framer Motion** animations.
+
+---
+
+## 🛠️ Technology Stack
+
+| Category | Tools & Technologies |
+| :--- | :--- |
+| **Frontend Core** | React 18, TypeScript, Vite |
+| **Styling** | Tailwind CSS, Lucide Icons, Shadcn UI |
+| **State Management** | Zustand (Global), React Query (SVR) |
+| **Backend** | Node.js, Express.js, TypeScript |
+| **Database & Auth** | Supabase (PostgreSQL), Google OAuth |
+| **Animations** | Framer Motion (Transitions & Micro-interactions) |
+| **Real-time** | Socket.io / WebSockets |
+
+---
+
+## 🏗️ Architecture Overview
+
+The project is split into two main modules, maintaining a strict separation of concerns for scalability and performance.
 
 ```bash
 bitebook-direct/
-├── frontend/          # 🎨 React + Vite + Tailwind CSS
-│   ├── src/           # Components, Pages, State Hooks
-│   ├── public/        # Icons, Branding, Static Assets
-├── backend/           # ⚙️ Express.js + TypeScript
-│   ├── src/           # API Routes, Controllers, Middleware
-│   └── schema.sql     # Database Architecture
-└── README.md          # 📍 Project Documentation
+├── frontend/          # Vite-powered SPA
+│   ├── src/           # ⚛️ Components, Hooks, Store, Pages
+│   ├── components/    # 🧱 Reusable UI (Shadcn + Framer)
+│   └── store/         # 🧠 Zustand Auth & Data Stores
+├── backend/           # Express.js API
+│   ├── src/           # ⚙️ Controllers, Routes, Middleware
+│   └── lib/           # 🛠️ Supabase & Utility clients
+└── .github/           # 🤖 CI/CD Workflows
 ```
+
+---
 
 ## 🚀 Getting Started
 
-### 🖥️ Frontend Setup
+### 1. Prerequisites
+- Node.js (v18+)
+- Supabase Project (Database + Google Auth enabled)
 
+### 2. Frontend Installation
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
+> Access at: `http://localhost:8080`
 
-👉 _Live at: `http://localhost:8080`_
-
-### 🛠️ Backend Setup
-
+### 3. Backend Installation
 ```bash
 cd backend
 npm install
-# Configure .env with Supabase keys
+# Configure your .env (SUPABASE_URL, SUPABASE_ANON_KEY, etc.)
 npm run dev
 ```
-
-👉 _API at: `http://localhost:3000`_
+> Access at: `http://localhost:3000`
 
 ---
 
-## ✨ Premium Features
+## 🎨 Design Philosophy
 
-- 🏥 **Multi-Restaurant Ecosystem**: Centralized hub for diverse dining options.
-- ⚡ **Real-Time Tracking**: Instant status updates via Socket.io.
-- 📅 **Smart Reservations**: Seamless table booking with capacity management.
-- 🔍 **Advanced Filtering**: Precision search by cuisine, price, and dietary needs.
-- 📱 **Mobile-First UX**: Tactile, responsive design for on-the-go booking.
-- 🎭 **Glassmorphism UI**: High-end aesthetic with buttery-smooth Framer Motion animations.
-
-## 🛠️ Tech Stack & Skills
-
-| Category       | Technology                               |
-| :------------- | :--------------------------------------- |
-| **Frontend**   | React 18, TypeScript, Vite, Tailwind CSS |
-| **Animations** | Framer Motion, GSAP                      |
-| **State**      | Zustand, React Query                     |
-| **Backend**    | Node.js, Express.js, TypeScript          |
-| **Database**   | Supabase (PostgreSQL), Auth, Storage     |
-| **Validation** | Zod, JWT                                 |
-| **Real-time**  | Socket.io                                |
-
-## 🎨 Design Excellence
-
-- **Iconic Branding**: Elegant lotus-inspired visual identity.
-- **Micro-interactions**: Subtle hover effects and feedback loops.
-- **SEO Optimized**: Semantic HTML and performance-tuned for search engines.
-- **Accessibility**: Built with Radix UI primitives for WCAG compliance.
+- **Organic & Earthy**: A color palette inspired by nature (Deep Greens, Soft Creams, Vibrant Oranges).
+- **Tactile Feedback**: Every interaction provides subtle visual feedback (Hover glows, scale-up clicks).
+- **Accessibility**: Built on **Radix UI** primitives to ensure dining technology is usable by everyone.
+- **Performance**: SEO optimized and fast-loading through asset minification and efficient state purging.
 
 ---
 
 <div align="center">
-  <p><b>Developed with ❤️ by <a href="https://github.com/VARA4u-tech">VARA4u-tech</a></b></p>
-  <p><i>Empowering the next generation of dining technology.</i></p>
+  <p><b>Crafted with ❤️ for Premium Dining</b></p>
+  <p>Copyright © 2026 Bhojanālaya Direct • <a href="https://github.com/VARA4u-tech">VARA4u-tech</a></p>
 </div>
