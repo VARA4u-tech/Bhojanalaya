@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCartStore } from "@/store/cartStore";
-import { useOrderStore } from "@/store/orderStore";
-import { useRestaurantStore } from "@/store";
+import { useOrderStore, Order } from "@/store/orderStore";
+import { useRestaurantStore } from "@/store/restaurantStore";
+import { useUserStore } from "@/store/userStore";
+import { EmailPreviewDialog } from "@/components/order/EmailPreviewDialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,8 +22,6 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { motion } from "framer-motion";
-
-import { useUserStore } from "@/store/userStore";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 
@@ -113,6 +113,9 @@ export default function CheckoutPage() {
   const navigate = useNavigate();
   const { items, getTotal, clearCart } = useCartStore();
   const { createOrder } = useOrderStore();
+  const { user } = useUserStore();
+  const [showEmailPreview, setShowEmailPreview] = useState(false);
+  const [latestOrder, setLatestOrder] = useState<Order | null>(null);
   const { selectedRestaurant } = useRestaurantStore();
   const { toast } = useToast();
   const { isAuthenticated } = useUserStore();
@@ -183,8 +186,12 @@ export default function CheckoutPage() {
         description: `Order ${newOrder.orderNumber} has been confirmed via ${paymentMethod.toUpperCase()}`,
       });
 
+      setLatestOrder(newOrder);
       setIsProcessing(false);
-      navigate("/orders");
+      setShowEmailPreview(true);
+      
+      // Wait a bit before navigating so they can see the email preview if they want, 
+      // or just navigate after they close it. For now, let's just stay on page till closed.
     };
 
     if (paymentMethod === "cash") {
@@ -511,6 +518,15 @@ export default function CheckoutPage() {
           </div>
         </div>
       </div>
+      <EmailPreviewDialog 
+        open={showEmailPreview}
+        onOpenChange={(open) => {
+          setShowEmailPreview(open);
+          if (!open) navigate("/orders");
+        }}
+        order={latestOrder}
+        userEmail={user?.email || "user@example.com"}
+      />
     </div>
   );
 }

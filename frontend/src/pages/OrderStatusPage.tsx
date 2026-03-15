@@ -14,6 +14,9 @@ import { CancelOrderDialog } from "@/components/order/CancelOrderDialog";
 import { useToast } from "@/hooks/use-toast";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useSocket } from "@/context/SocketContext";
+import { useUserStore } from "@/store/userStore";
+import { EmailPreviewDialog } from "@/components/order/EmailPreviewDialog";
+import { Mail } from "lucide-react";
 
 const orderSteps: { status: OrderStatus; label: string; icon: React.ElementType }[] = [
   { status: "waiting", label: "Order Placed", icon: Clock },
@@ -44,12 +47,14 @@ export default function OrderStatusPage() {
   const [currentStep, setCurrentStep] = useState(2);
   const [isAnimating, setIsAnimating] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [emailPreviewOpen, setEmailPreviewOpen] = useState(false);
 
   const { orders, activeOrder, setActiveOrder, updateOrderStatus } = useOrderStore();
   const { getRestaurantById } = useRestaurantStore();
   const { addBulkItems } = useCartStore();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { user } = useUserStore();
 
   // Use active order or show mock data
   const displayOrder = activeOrder || (mockOrder as unknown as Order);
@@ -298,6 +303,23 @@ export default function OrderStatusPage() {
                   </div>
                 </div>
 
+                <div className="flex flex-wrap gap-4 justify-center">
+                  <Button
+                    variant="outline"
+                    className="rounded-xl px-8 h-12 border-slate-200 font-bold gap-2"
+                    onClick={() => setEmailPreviewOpen(true)}
+                  >
+                    <Mail className="w-5 h-5 text-primary" />
+                    View Email Receipt
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="rounded-xl px-8 h-12 border-slate-200 font-bold"
+                  >
+                    Download Invoice
+                  </Button>
+                </div>
+
                 {/* Actions */}
                 <div className="flex flex-col gap-3 mt-10">
                   {currentStep < orderSteps.length - 1 ? (
@@ -378,6 +400,12 @@ export default function OrderStatusPage() {
           onConfirm={handleCancelOrder}
           orderTotal={displayOrder?.total || 0}
           refundAmount={(displayOrder?.total || 0) * 0.8}
+        />
+        <EmailPreviewDialog 
+          open={emailPreviewOpen}
+          onOpenChange={setEmailPreviewOpen}
+          order={displayOrder}
+          userEmail={user?.email || "user@example.com"}
         />
       </div>
     </>
