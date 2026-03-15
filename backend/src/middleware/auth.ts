@@ -13,12 +13,13 @@ export const authMiddleware = async (
     req: AuthRequest,
     res: Response,
     next: NextFunction
-) => {
+): Promise<void> => {
     try {
         const authHeader = req.headers.authorization;
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({ error: 'No authorization token provided' });
+            res.status(401).json({ error: 'No authorization token provided' });
+            return;
         }
 
         const token = authHeader.substring(7);
@@ -26,7 +27,8 @@ export const authMiddleware = async (
         const { data: { user }, error } = await supabase.auth.getUser(token);
 
         if (error || !user) {
-            return res.status(401).json({ error: 'Invalid or expired token' });
+            res.status(401).json({ error: 'Invalid or expired token' });
+            return;
         }
 
         req.user = {
@@ -46,9 +48,10 @@ export const adminMiddleware = (
     req: AuthRequest,
     res: Response,
     next: NextFunction
-) => {
+): void => {
     if (req.user?.role !== 'admin') {
-        return res.status(403).json({ error: 'Admin access required' });
+        res.status(403).json({ error: 'Admin access required' });
+        return;
     }
     next();
 };

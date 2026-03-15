@@ -48,7 +48,7 @@ const AppRoutes = () => {
   // Check auth session on mount
   useEffect(() => {
     checkSession();
-  }, []);
+  }, [checkSession]);
 
   return (
     <AnimatePresence mode="wait" initial={false}>

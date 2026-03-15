@@ -19,7 +19,7 @@ const loginSchema = z.object({
 });
 
 // Register
-router.post('/register', async (req: Request, res: Response) => {
+router.post('/register', async (req: Request, res: Response): Promise<void> => {
     try {
         const { email, password, name, phone } = registerSchema.parse(req.body);
 
@@ -36,7 +36,8 @@ router.post('/register', async (req: Request, res: Response) => {
         });
 
         if (error) {
-            return res.status(400).json({ error: error.message });
+            res.status(400).json({ error: error.message });
+            return;
         }
 
         res.status(201).json({
@@ -46,14 +47,15 @@ router.post('/register', async (req: Request, res: Response) => {
         });
     } catch (error) {
         if (error instanceof z.ZodError) {
-            return res.status(400).json({ error: 'Validation failed', details: error.errors });
+            res.status(400).json({ error: 'Validation failed', details: error.errors });
+            return;
         }
         res.status(500).json({ error: 'Registration failed' });
     }
 });
 
 // Login
-router.post('/login', async (req: Request, res: Response) => {
+router.post('/login', async (req: Request, res: Response): Promise<void> => {
     try {
         const { email, password } = loginSchema.parse(req.body);
 
@@ -63,7 +65,8 @@ router.post('/login', async (req: Request, res: Response) => {
         });
 
         if (error) {
-            return res.status(401).json({ error: error.message });
+            res.status(401).json({ error: error.message });
+            return;
         }
 
         res.json({
@@ -73,25 +76,28 @@ router.post('/login', async (req: Request, res: Response) => {
         });
     } catch (error) {
         if (error instanceof z.ZodError) {
-            return res.status(400).json({ error: 'Validation failed', details: error.errors });
+            res.status(400).json({ error: 'Validation failed', details: error.errors });
+            return;
         }
         res.status(500).json({ error: 'Login failed' });
     }
 });
 
 // Logout
-router.post('/logout', async (req: Request, res: Response) => {
+router.post('/logout', async (req: Request, res: Response): Promise<void> => {
     try {
         const authHeader = req.headers.authorization;
         if (!authHeader) {
-            return res.status(401).json({ error: 'No authorization token' });
+            res.status(401).json({ error: 'No authorization token' });
+            return;
         }
 
-        const token = authHeader.substring(7);
+        authHeader.substring(7);
         const { error } = await supabase.auth.signOut();
 
         if (error) {
-            return res.status(400).json({ error: error.message });
+            res.status(400).json({ error: error.message });
+            return;
         }
 
         res.json({ message: 'Logout successful' });

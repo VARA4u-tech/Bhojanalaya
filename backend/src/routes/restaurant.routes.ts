@@ -6,7 +6,7 @@ import { authMiddleware, adminMiddleware } from '../middleware/auth';
 const router = Router();
 
 // Get all restaurants
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', async (_req: Request, res: Response) => {
     try {
         const { data, error } = await supabaseAdmin
             .from('restaurants')

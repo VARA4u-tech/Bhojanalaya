@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { supabaseAdmin } from '../config/supabase';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 

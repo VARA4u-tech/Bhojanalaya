@@ -152,7 +152,7 @@ function PerkCard({
   title,
   description,
 }: {
-  icon: any;
+  icon: React.ElementType;
   title: string;
   description: string;
 }) {

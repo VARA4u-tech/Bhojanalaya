@@ -2,24 +2,26 @@ import { Request, Response, NextFunction } from 'express';
 
 export const errorHandler = (
     err: Error,
-    req: Request,
+    _req: Request,
     res: Response,
-    next: NextFunction
-) => {
+    _next: NextFunction
+): void => {
     console.error('Error:', err);
 
     if (err.name === 'ValidationError') {
-        return res.status(400).json({
+        res.status(400).json({
             error: 'Validation Error',
             details: err.message
         });
+        return;
     }
 
     if (err.name === 'UnauthorizedError') {
-        return res.status(401).json({
+        res.status(401).json({
             error: 'Unauthorized',
             message: 'Invalid or missing authentication token'
         });
+        return;
     }
 
     res.status(500).json({

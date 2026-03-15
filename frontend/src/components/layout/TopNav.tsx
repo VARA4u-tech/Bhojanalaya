@@ -64,7 +64,7 @@ export function TopNav() {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden lg:flex items-center gap-1">
           {navLinks.map((link) => {
             const isActive = location.pathname === link.href;
             return (

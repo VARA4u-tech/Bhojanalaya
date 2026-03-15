@@ -1,3 +1,4 @@
+import * as React from "react";
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -21,20 +22,20 @@ export const AnimatedTestimonials = ({
 }) => {
     const [active, setActive] = useState(0);
 
-    const handleNext = () => {
+    const handleNext = React.useCallback(() => {
         setActive((prev) => (prev + 1) % testimonials.length);
-    };
+    }, [testimonials.length]);
 
-    const handlePrev = () => {
+    const handlePrev = React.useCallback(() => {
         setActive((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-    };
+    }, [testimonials.length]);
 
     const isActive = (index: number) => {
         return index === active;
     };
 
     useEffect(() => {
-        let interval: any;
+        let interval: ReturnType<typeof setInterval> | undefined;
         if (autoplay) {
             interval = setInterval(() => {
                 handleNext();
@@ -43,7 +44,7 @@ export const AnimatedTestimonials = ({
         return () => {
             if (interval) clearInterval(interval);
         };
-    }, [autoplay, testimonials.length]);
+    }, [autoplay, handleNext]);
 
     const randomRotateY = () => {
         return Math.floor(Math.random() * 21) - 10;

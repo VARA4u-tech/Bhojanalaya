@@ -135,7 +135,7 @@ function HelpCategory({
   title,
   description,
 }: {
-  icon: any;
+  icon: React.ElementType;
   title: string;
   description: string;
 }) {

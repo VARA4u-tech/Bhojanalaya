@@ -14,7 +14,7 @@ export function BottomNav() {
     const location = useLocation();
 
     return (
-        <nav className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 lg:hidden w-[95%] xs:w-[90%] max-w-[420px]">
+        <nav className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 md:hidden w-[95%] xs:w-[90%] max-w-[420px]">
             <div className="bg-background/90 backdrop-blur-2xl border border-primary/20 shadow-[0_8px_32px_rgba(0,0,0,0.12)] rounded-[1.75rem] sm:rounded-[2rem] px-2 xs:px-3 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between">
                 {navItems.map((item) => {
                     const isActive = location.pathname === item.href;

@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Response } from "express";
 import Razorpay from "razorpay";
 import { config } from "../config/env";
 import { authMiddleware, AuthRequest } from "../middleware/auth";
@@ -12,13 +12,14 @@ const razorpay = new Razorpay({
 });
 
 // Endpoint to create a Razorpay order
-router.post("/create-order", authMiddleware, async (req: AuthRequest, res) => {
+router.post("/create-order", authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { items, restaurantId } = req.body;
     const userId = req.user!.id;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
-      return res.status(400).json({ error: "No items provided" });
+      res.status(400).json({ error: "No items provided" });
+      return;
     }
 
     // Calculate total amount
@@ -57,7 +58,7 @@ router.post("/create-order", authMiddleware, async (req: AuthRequest, res) => {
 });
 
 // Endpoint to verify payment signature
-router.post("/verify", authMiddleware, async (req: AuthRequest, res) => {
+router.post("/verify", authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
       req.body;

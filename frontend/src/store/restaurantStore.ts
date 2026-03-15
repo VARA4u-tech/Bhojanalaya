@@ -15,12 +15,20 @@ export interface Restaurant {
     phone: string;
 }
 
+export interface MenuItem {
+    id: number;
+    name: string;
+    price: number;
+    category: 'main' | 'drinks' | 'desserts';
+    image: string;
+}
+
 interface RestaurantState {
     restaurants: Restaurant[];
     selectedRestaurant: Restaurant | null;
     selectRestaurant: (restaurantId: string) => void;
     getRestaurantById: (restaurantId: string) => Restaurant | undefined;
-    getMenuItemsByRestaurant: (restaurantId: string) => any[];
+    getMenuItemsByRestaurant: (restaurantId: string) => MenuItem[];
 }
 
 const restaurants: Restaurant[] = [
@@ -225,7 +233,7 @@ export const useRestaurantStore = create<RestaurantState>()(
                     { id: 202, name: 'Fresh Lime Soda', price: 80, category: 'drinks', image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&h=400&fit=crop' },
                     { id: 4, name: 'Pootharekulu (Paper Sweet)', price: 150, category: 'desserts', image: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400&h=400&fit=crop' },
                     { id: 204, name: 'Badam Milk (Hot)', price: 120, category: 'drinks', image: 'https://images.unsplash.com/photo-1541167760496-162955ed8a9f?w=400&h=400&fit=crop' },
-                ] as any[];
+                ] as MenuItem[];
             },
         }),
         {

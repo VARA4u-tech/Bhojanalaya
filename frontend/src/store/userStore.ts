@@ -59,7 +59,7 @@ export const useUserStore = create<UserState>()(
             },
 
             loginWithPassword: async (email, password) => {
-                const { error, data } = await supabase.auth.signInWithPassword({
+                const { error } = await supabase.auth.signInWithPassword({
                     email,
                     password
                 });
@@ -67,7 +67,7 @@ export const useUserStore = create<UserState>()(
             },
 
             signUpWithPassword: async (email, password, name) => {
-                const { error, data } = await supabase.auth.signUp({
+                const { error } = await supabase.auth.signUp({
                     email,
                     password,
                     options: {

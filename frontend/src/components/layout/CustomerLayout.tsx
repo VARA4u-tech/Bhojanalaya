@@ -23,7 +23,7 @@ export function CustomerLayout() {
     <div className={cn("min-h-screen flex flex-col bg-background", isPosterPage && "h-screen overflow-hidden")}>
       {!isPosterPage && <TopNav />}
       {/* Adjusted padding for responsive nav heights */}
-      <main className={cn("flex-1", isPosterPage ? "relative" : "pt-[4.5rem] sm:pt-24 pb-24 sm:pb-28 lg:pt-28 lg:pb-0")}>
+      <main className={cn("flex-1", isPosterPage ? "relative" : "pt-[4.5rem] sm:pt-24 md:pt-28 pb-24 sm:pb-28 md:pb-0")}>
         <AnimatePresence mode="wait">
           <PageTransition key={location.pathname} className="h-full">
             {currentOutlet}

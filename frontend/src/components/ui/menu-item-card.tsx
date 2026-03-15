@@ -75,7 +75,7 @@ const MenuItemCard = React.forwardRef<HTMLDivElement, MenuItemCardProps>(
         animate="animate"
         whileHover="hover"
         layout
-        {...(props as any)}
+        {...props}
       >
         {/* --- IMAGE & ADD BUTTON CONTAINER --- */}
         <div className="relative overflow-hidden rounded-t-xl">

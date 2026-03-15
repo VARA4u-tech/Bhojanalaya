@@ -145,7 +145,7 @@ function ContactInfoCard({
   value,
   description,
 }: {
-  icon: any;
+  icon: React.ElementType;
   title: string;
   value: string;
   description: string;

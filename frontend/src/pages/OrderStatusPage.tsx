@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { StatusBadge, OrderStatus } from "@/components/ui/status-badge";
 import { Clock, MapPin, ChefHat, Bell, Check, RefreshCw, XCircle, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useOrderStore, useCartStore } from "@/store";
+import { useOrderStore, useCartStore, Order, OrderItem } from "@/store";
 import { OrderListSkeleton } from "@/components/skeletons/OrderCardSkeleton";
 import { ErrorBoundary } from "@/components/error/ErrorBoundary";
 import { ErrorFallback } from "@/components/error/ErrorFallback";
@@ -32,10 +32,8 @@ const mockOrder = {
     { id: 2, name: "Caesar Salad", quantity: 2, price: 12.99 },
     { id: 3, name: "Fresh Lemonade", quantity: 2, price: 4.99 },
   ],
-  table: 5,
   tableNumber: "5",
-  estimatedTime: "15 mins",
-  placedAt: "12:30 PM",
+  estimatedTime: 15,
   createdAt: new Date(),
   updatedAt: new Date(),
   total: 0,
@@ -53,8 +51,8 @@ export default function OrderStatusPage() {
   const navigate = useNavigate();
 
   // Use active order or show mock data
-  const displayOrder = activeOrder || (mockOrder as any);
-  const total = displayOrder.items?.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0) || 0;
+  const displayOrder = activeOrder || (mockOrder as unknown as Order);
+  const total = displayOrder.items?.reduce((sum: number, item: OrderItem) => sum + item.price * item.quantity, 0) || 0;
   const canCancelOrder = displayOrder && (displayOrder.status === 'waiting' || displayOrder.status === 'confirmed');
 
   // Scroll to top on mount to prevent glitchy transitions
@@ -192,14 +190,14 @@ export default function OrderStatusPage() {
                     <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
                       <MapPin className="h-4 w-4" />
                     </div>
-                    <span>Table {displayOrder.tableNumber || displayOrder.table || 'N/A'}</span>
+                    <span>Table {displayOrder.tableNumber || 'N/A'}</span>
                   </div>
                   <div className="flex items-center gap-2 text-muted-foreground">
                     <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
                       <Clock className="h-4 w-4" />
                     </div>
                     <span>
-                      {displayOrder.placedAt || new Date(displayOrder.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {new Date(displayOrder.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
                 </div>
@@ -290,7 +288,7 @@ export default function OrderStatusPage() {
                             <div className="text-sm text-muted-foreground mt-0.5">
                               {isCurrent ? (
                                 step.status === "preparing"
-                                  ? `Cooking your delicious meal... (${displayOrder.estimatedTime || mockOrder.estimatedTime} left)`
+                                  ? `Cooking your delicious meal... (${displayOrder.estimatedTime || mockOrder.estimatedTime} mins left)`
                                   : "Processing your order"
                               ) : isCompleted ? (
                                 "Requirement met"
@@ -350,7 +348,7 @@ export default function OrderStatusPage() {
                 <h2 className="font-heading text-h3 mb-6">Items Summary</h2>
 
                 <div className="space-y-5 mb-8">
-                  {displayOrder.items?.map((item: any, index: number) => (
+                  {displayOrder.items?.map((item: OrderItem, index: number) => (
                     <div key={index} className="flex items-center justify-between group">
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center font-bold text-primary group-hover:scale-110 transition-transform">
