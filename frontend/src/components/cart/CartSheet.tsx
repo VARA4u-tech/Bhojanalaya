@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
     Sheet,
     SheetContent,
@@ -13,6 +14,7 @@ import { Minus, Plus, ShoppingCart, Trash2, Sparkles } from "lucide-react";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useNavigate } from "react-router-dom";
 import { useRestaurantStore } from "@/store";
+import { MenuItem } from "@/store/restaurantStore";
 import { motion } from "framer-motion";
 
 export function CartSheet() {
@@ -22,12 +24,24 @@ export function CartSheet() {
     const total = getTotal();
     const { getMenuItemsByRestaurant } = useRestaurantStore();
 
-    // Get recommendations (drinks/desserts not in cart)
-    const allMenuItems = getMenuItemsByRestaurant(items[0]?.restaurantId || 'southern-spice');
-    const cartItemIds = new Set(items.map(i => i.id));
-    const recommendations = allMenuItems
-        .filter(item => (item.category === 'drinks' || item.category === 'desserts') && !cartItemIds.has(item.id))
-        .slice(0, 4);
+    const [recommendations, setRecommendations] = useState<MenuItem[]>([]);
+
+    useEffect(() => {
+        const fetchRecommendations = async () => {
+            const restaurantId = items[0]?.restaurantId || 'southern-spice';
+            const allMenuItems = await getMenuItemsByRestaurant(restaurantId);
+            
+            if (Array.isArray(allMenuItems)) {
+                const cartItemIds = new Set(items.map(i => i.id));
+                const filtered = allMenuItems
+                    .filter(item => (item.category === 'drinks' || item.category === 'desserts') && !cartItemIds.has(item.id))
+                    .slice(0, 4);
+                setRecommendations(filtered);
+            }
+        };
+
+        fetchRecommendations();
+    }, [items, getMenuItemsByRestaurant]);
 
     const { addItem } = useCartStore();
 

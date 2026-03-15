@@ -12,7 +12,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useCartStore, useRestaurantStore } from "@/store";
+import { useCartStore, useRestaurantStore, type MenuItem } from "@/store";
 import { useUIStore } from "@/store/uiStore";
 import { MenuGridSkeleton } from "@/components/skeletons/MenuItemSkeleton";
 import { ErrorBoundary } from "@/components/error/ErrorBoundary";
@@ -1219,10 +1219,9 @@ export default function MenuPage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeDietaryTags, setActiveDietaryTags] = useState<string[]>([]);
-  const [priceSort, setPriceSort] = useState<"none" | "low-high" | "high-low">(
-    "none",
-  );
+  const [priceSort, setPriceSort] = useState<"none" | "low-high" | "high-low">("none");
   const [isLoading, setIsLoading] = useState(true);
+  const [dbItems, setDbItems] = useState<MenuItem[]>([]);
 
   const {
     items: cart,
@@ -1231,12 +1230,35 @@ export default function MenuPage() {
     getItemCount,
     getTotal,
   } = useCartStore();
-  const { restaurants, selectedRestaurant, selectRestaurant } =
-    useRestaurantStore();
+  const { restaurants, selectedRestaurant, selectRestaurant, fetchRestaurants, getMenuItemsByRestaurant } = useRestaurantStore();
+  
+  useEffect(() => {
+    fetchRestaurants();
+  }, [fetchRestaurants]);
+
+  // Fetch menu items from DB when restaurant changes
+  useEffect(() => {
+    const loadItems = async () => {
+      if (selectedRestaurant) {
+        setIsLoading(true);
+        try {
+          const items = await getMenuItemsByRestaurant(selectedRestaurant.id);
+          setDbItems(items);
+        } catch (error) {
+          console.error("Error loading menu items:", error);
+          setDbItems([]);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+    loadItems();
+  }, [selectedRestaurant, getMenuItemsByRestaurant]);
+
   const { toggleCart } = useUIStore();
   const { toast } = useToast(); // Initialize useToast
 
-  // Pre-built Set for O(1) veg lookup (much faster than Array.includes on every filter)
+  // Pre-built Set for O(1) veg lookup
   const VEG_SET = useMemo(
     () =>
       new Set([
@@ -1249,61 +1271,46 @@ export default function MenuPage() {
     [],
   );
 
-  // Mock dietary data for demo — memoised so it's computed once
+  // Mock dietary data
   const getDiet = useCallback(
-    (id: number) => {
-      return VEG_SET.has(id) ? "veg" : "non-veg";
+    (id: string | number) => {
+      const item = dbItems.find(i => i.id === id);
+      if (item && item.is_veg !== undefined) return item.is_veg ? "veg" : "non-veg";
+      return typeof id === 'number' && VEG_SET.has(id) ? "veg" : "non-veg";
     },
-    [VEG_SET],
+    [VEG_SET, dbItems],
   );
 
-  // Smart Dietary Tags Mock — memoised per call via useCallback
+  // Smart Dietary Tags Mock
   const getDietaryTags = useCallback(
-    (id: number): string[] => {
+    (id: string | number): string[] => {
       const tags: string[] = [];
-      if ([4, 9, 14, 15, 202, 206, 207, 209, 803, 1007].includes(id))
-        tags.push("Vegan");
-      if ([2, 4, 14, 106, 119, 120, 304, 605, 904, 1003].includes(id))
-        tags.push("Jain");
-      if ([4, 8, 11, 102, 103, 104, 117, 305, 403, 502].includes(id))
-        tags.push("Gluten-Free");
-      if ([112, 108, 116, 204, 406, 507, 606, 804].includes(id))
-        tags.push("Contains Nuts");
+      const numId = typeof id === 'number' ? id : -1;
+      
+      if ([4, 9, 14, 15, 202, 206, 207, 209, 803, 1007].includes(numId)) tags.push("Vegan");
+      if ([2, 4, 14, 106, 119, 120, 304, 605, 904, 1003].includes(numId)) tags.push("Jain");
+      if ([4, 8, 11, 102, 103, 104, 117, 305, 403, 502].includes(numId)) tags.push("Gluten-Free");
+      if ([112, 108, 116, 204, 406, 507, 606, 804].includes(numId)) tags.push("Contains Nuts");
       else tags.push("Nut-Free");
 
-      if (getDiet(id) === "non-veg" && ![301, 604, 1002].includes(id))
-        tags.push("Dairy-Free");
-      if (tags.includes("Vegan") && !tags.includes("Dairy-Free"))
-        tags.push("Dairy-Free");
+      if (getDiet(id) === "non-veg" && ![301, 604, 1002].includes(numId)) tags.push("Dairy-Free");
+      if (tags.includes("Vegan") && !tags.includes("Dairy-Free")) tags.push("Dairy-Free");
+      if (tags.length === 0) tags.push("Nut-Free");
 
       return tags;
     },
     [getDiet],
   );
 
-  const DIETARY_OPTIONS = [
-    "Vegan",
-    "Jain",
-    "Gluten-Free",
-    "Nut-Free",
-    "Dairy-Free",
-  ];
+  const DIETARY_OPTIONS = ["Vegan", "Jain", "Gluten-Free", "Nut-Free", "Dairy-Free"];
 
-  // Simulate loading (in real app, this would be an API call)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
-    return () => clearTimeout(timer);
-  }, [selectedRestaurant]);
-
-  // filteredItems is now memoised – only recomputes when filters change
+  // filteredItems is now memoised
   const filteredItems = useMemo(
-    () =>
-      menuItems
+    () => {
+      // Use database items if available, otherwise use mock items as fallback
+      const sourceItems = dbItems.length > 0 ? dbItems : [];
+      return sourceItems
         .filter((item) => {
-          const matchesRestaurant =
-            !selectedRestaurant || item.restaurantId === selectedRestaurant.id;
           const matchesSearch = item.name
             .toLowerCase()
             .includes(searchQuery.toLowerCase());
@@ -1315,6 +1322,8 @@ export default function MenuPage() {
             matchesCategory = getDiet(item.id) === "non-veg";
           } else if (activeCategory === "drinks") {
             matchesCategory = item.category === "drinks";
+          } else if (activeCategory !== "all") {
+            matchesCategory = item.category === activeCategory;
           }
 
           const itemTags = getDietaryTags(item.id);
@@ -1323,7 +1332,6 @@ export default function MenuPage() {
           );
 
           return (
-            matchesRestaurant &&
             matchesCategory &&
             matchesSearch &&
             matchesDietaryTags
@@ -1333,9 +1341,10 @@ export default function MenuPage() {
           if (priceSort === "low-high") return a.price - b.price;
           if (priceSort === "high-low") return b.price - a.price;
           return 0;
-        }),
+        });
+    },
     [
-      selectedRestaurant,
+      dbItems,
       searchQuery,
       activeCategory,
       activeDietaryTags,
@@ -1345,9 +1354,14 @@ export default function MenuPage() {
     ],
   );
 
-  const addToCart = (item: (typeof menuItems)[0]) => {
+  const addToCart = (item: MenuItem) => {
+    // Generate a consistent numeric ID for the cart store if it's a UUID
+    const cartId = typeof item.id === 'string' 
+      ? Math.abs(item.id.split('').reduce((a,b)=>{a=((a<<5)-a)+b.charCodeAt(0);return a&a},0)) 
+      : item.id;
+
     addItem({
-      id: item.id,
+      id: cartId,
       name: item.name,
       price: item.price,
       image: item.image,
@@ -1359,14 +1373,14 @@ export default function MenuPage() {
     });
   };
 
-  const updateQuantity = (id: number, delta: number) => {
+  const updateQuantity = (id: string | number, delta: number) => {
     const currentItem = cart.find((item) => item.id === id);
     if (currentItem) {
-      updateCartQuantity(id, currentItem.quantity + delta);
+      updateCartQuantity(id as number, currentItem.quantity + delta);
     }
   };
 
-  const getItemQuantity = (id: number) => {
+  const getItemQuantity = (id: string | number) => {
     return cart.find((item) => item.id === id)?.quantity || 0;
   };
 
@@ -1410,7 +1424,14 @@ export default function MenuPage() {
           }}
         >
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-4">
-            {restaurants.map((restaurant) => (
+            {isLoading ? (
+              <div className="col-span-full py-20 text-center">
+                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+                <p className="mt-4 text-muted-foreground font-medium animate-pulse">
+                  Finding the best restaurants for you...
+                </p>
+              </div>
+            ) : restaurants.map((restaurant) => (
               <motion.div
                 key={restaurant.id}
                 variants={{
@@ -1622,7 +1643,7 @@ export default function MenuPage() {
               aria-label="Search dishes"
             />
             <datalist id="food-suggestions">
-              {menuItems.map((item) => (
+              {dbItems.map((item) => (
                 <option key={item.id} value={item.name} />
               ))}
             </datalist>
@@ -1636,8 +1657,8 @@ export default function MenuPage() {
               { id: "non-veg", label: "Non-Veg" },
               { id: "drinks", label: "Drinks" },
             ].map((tab) => {
-              // Calculate counts
-              const count = menuItems.filter((item) => {
+              // Calculate counts based on database items for the selected restaurant
+              const count = dbItems.filter((item) => {
                 if (tab.id === "all") return true;
                 if (tab.id === "drinks") return item.category === "drinks";
                 if (tab.id === "veg") return getDiet(item.id) === "veg";
@@ -1769,11 +1790,11 @@ export default function MenuPage() {
                     onAdd={() =>
                       addToCart({
                         ...item,
-                        restaurantId: selectedRestaurant?.id,
+                        restaurant_id: selectedRestaurant?.id,
                       })
                     }
                     className={cn(
-                      !item.available &&
+                      item.available === false &&
                         "opacity-60 saturate-50 pointer-events-none",
                     )}
                   />

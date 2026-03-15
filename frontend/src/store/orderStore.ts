@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { supabase } from '../lib/supabase';
 
 export type OrderStatus = 'waiting' | 'confirmed' | 'preparing' | 'ready' | 'served' | 'completed' | 'cancelled';
 
@@ -19,47 +20,123 @@ export interface Order {
     status: OrderStatus;
     createdAt: Date;
     updatedAt: Date;
-    estimatedTime?: number; // in minutes
+    estimatedTime?: number;
     tableNumber?: string;
     notes?: string;
-    refundAmount?: number; // 50% refund on cancellation
+    userId?: string;
 }
 
 interface OrderState {
     orders: Order[];
     activeOrder: Order | null;
-    createOrder: (items: OrderItem[], tableNumber?: string, notes?: string, restaurantId?: string, restaurantName?: string) => Order;
-    cancelOrder: (orderId: string) => boolean;
-    updateOrderStatus: (orderId: string, status: OrderStatus) => void;
+    isLoading: boolean;
+    fetchOrders: () => Promise<void>;
+    subscribeToOrders: () => () => void;
+    createOrder: (items: OrderItem[], tableNumber?: string, notes?: string, restaurantId?: string, restaurantName?: string, status?: OrderStatus) => Promise<Order | null>;
+    updateOrderStatus: (orderId: string, status: OrderStatus) => Promise<void>;
     setActiveOrder: (orderId: string | null) => void;
     getOrderById: (orderId: string) => Order | undefined;
-    getOrderHistory: () => Order[];
-    clearOrders: () => void;
 }
 
-// Mock order generation
-const generateOrderNumber = () => {
-    return `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
-};
+const generateOrderNumber = () => `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
+interface DBOrder {
+    id: string;
+    order_number: string;
+    restaurant_id: string;
+    items: OrderItem[];
+    total: string;
+    status: string;
+    created_at: string;
+    updated_at: string;
+    table_number: string;
+    notes: string;
+    user_id: string;
+}
 
 export const useOrderStore = create<OrderState>((set, get) => ({
     orders: [],
     activeOrder: null,
+    isLoading: false,
 
-    createOrder: (items, tableNumber, notes, restaurantId, restaurantName) => {
-        const newOrder: Order = {
-            id: crypto.randomUUID(),
-            orderNumber: generateOrderNumber(),
-            restaurantId,
-            restaurantName,
-            items,
+    fetchOrders: async () => {
+        set({ isLoading: true });
+        const { data, error } = await supabase
+            .from('orders')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (!error && data) {
+            const mappedOrders: Order[] = (data as DBOrder[]).map((o) => ({
+                id: o.id,
+                orderNumber: o.order_number || o.id.substring(0, 15),
+                restaurantId: o.restaurant_id,
+                items: o.items as OrderItem[],
+                total: parseFloat(o.total),
+                status: o.status as OrderStatus,
+                createdAt: new Date(o.created_at),
+                updatedAt: new Date(o.updated_at),
+                tableNumber: o.table_number,
+                notes: o.notes,
+                userId: o.user_id
+            }));
+            set({ orders: mappedOrders, isLoading: false });
+        } else {
+            console.error('Error fetching orders:', error);
+            set({ isLoading: false });
+        }
+    },
+
+    subscribeToOrders: () => {
+        const subscription = supabase
+            .channel('orders-realtime')
+            .on('postgres_changes', { event: '*', table: 'orders', schema: 'public' }, () => {
+                get().fetchOrders();
+            })
+            .subscribe();
+        
+        return () => {
+            supabase.removeChannel(subscription);
+        };
+    },
+
+    createOrder: async (items, tableNumber, notes, restaurantId, restaurantName, status = 'waiting') => {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        const orderPayload = {
+            user_id: user?.id,
+            restaurant_id: restaurantId,
+            items: items,
             total: items.reduce((sum, item) => sum + item.price * item.quantity, 0),
-            status: 'waiting',
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            estimatedTime: 20 + Math.floor(Math.random() * 20), // 20-40 minutes
-            tableNumber,
-            notes,
+            status: status,
+            table_number: tableNumber,
+            notes: notes,
+            order_number: generateOrderNumber()
+        };
+
+        const { data, error } = await supabase
+            .from('orders')
+            .insert([orderPayload])
+            .select()
+            .single();
+
+        if (error) {
+            console.error('Error creating order:', error);
+            return null;
+        }
+
+        const newOrder: Order = {
+            id: data.id,
+            orderNumber: data.order_number,
+            restaurantId: data.restaurant_id,
+            restaurantName,
+            items: data.items,
+            total: parseFloat(data.total),
+            status: data.status as OrderStatus,
+            createdAt: new Date(data.created_at),
+            updatedAt: new Date(data.updated_at),
+            tableNumber: data.table_number,
+            notes: data.notes,
         };
 
         set((state) => ({
@@ -70,73 +147,30 @@ export const useOrderStore = create<OrderState>((set, get) => ({
         return newOrder;
     },
 
-    cancelOrder: (orderId) => {
-        const order = get().getOrderById(orderId);
-        if (!order) return false;
+    updateOrderStatus: async (orderId, status) => {
+        const { error } = await supabase
+            .from('orders')
+            .update({ status, updated_at: new Date().toISOString() })
+            .eq('id', orderId);
 
-        // Only allow cancellation for orders in 'waiting' or 'confirmed' status
-        if (order.status !== 'waiting' && order.status !== 'confirmed') {
-            return false;
+        if (error) {
+            console.error('Error updating status:', error);
+            return;
         }
 
-        // Calculate 50% refund
-        const refundAmount = order.total * 0.5;
-
-        set((state) => ({
-            orders: state.orders.map((o) =>
-                o.id === orderId
-                    ? {
-                        ...o,
-                        status: 'cancelled' as OrderStatus,
-                        updatedAt: new Date(),
-                        refundAmount
-                    }
-                    : o
-            ),
-            activeOrder:
-                state.activeOrder?.id === orderId
-                    ? {
-                        ...state.activeOrder,
-                        status: 'cancelled',
-                        updatedAt: new Date(),
-                        refundAmount
-                    }
-                    : state.activeOrder,
-        }));
-
-        return true;
-    },
-
-    updateOrderStatus: (orderId, status) => {
         set((state) => ({
             orders: state.orders.map((order) =>
-                order.id === orderId
-                    ? { ...order, status, updatedAt: new Date() }
-                    : order
+                order.id === orderId ? { ...order, status, updatedAt: new Date() } : order
             ),
-            activeOrder:
-                state.activeOrder?.id === orderId
-                    ? { ...state.activeOrder, status, updatedAt: new Date() }
-                    : state.activeOrder,
         }));
     },
 
     setActiveOrder: (orderId) => {
-        const order = orderId ? get().getOrderById(orderId) : null;
+        const order = orderId ? get().orders.find(o => o.id === orderId) : null;
         set({ activeOrder: order || null });
     },
 
     getOrderById: (orderId) => {
-        return get().orders.find((order) => order.id === orderId);
-    },
-
-    getOrderHistory: () => {
-        return get().orders.sort((a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-    },
-
-    clearOrders: () => {
-        set({ orders: [], activeOrder: null });
+        return get().orders.find((order) => order.id === orderId || order.orderNumber === orderId);
     },
 }));

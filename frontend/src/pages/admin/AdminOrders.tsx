@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
 import { 
@@ -22,6 +22,7 @@ type AdminOrderStatus = OrderStatus;
 
 interface Order {
   id: string;
+  orderNumber?: string;
   customer: string;
   table: string;
   items: string[];
@@ -51,16 +52,23 @@ const statusConfig: Record<OrderStatus, { label: string; color: string; icon: Re
 export default function AdminOrders() {
   const { restaurantId } = useParams();
   const { getRestaurantById } = useRestaurantStore();
-  const { orders: storeOrders, updateOrderStatus } = useOrderStore();
+  const { orders: storeOrders, updateOrderStatus, fetchOrders, subscribeToOrders, isLoading } = useOrderStore();
   
   const restaurant = restaurantId ? getRestaurantById(restaurantId) : null;
   const [filter, setFilter] = useState<OrderStatus | "all">("all");
+
+  useEffect(() => {
+    fetchOrders();
+    const unsubscribe = subscribeToOrders();
+    return () => unsubscribe();
+  }, [fetchOrders, subscribeToOrders]);
 
   const combinedOrders = [
     ...storeOrders
       .filter(o => o.restaurantId === restaurantId)
       .map(o => ({
-        id: o.orderNumber.substring(0, 15), // Keep more of the ID
+        id: o.id, // Use actual UUID
+        orderNumber: o.orderNumber,
         customer: o.tableNumber ? `Table ${o.tableNumber}` : "Direct Customer",
         table: o.tableNumber || "N/A",
         items: o.items.map(i => i.name),
@@ -69,16 +77,16 @@ export default function AdminOrders() {
         time: new Date(o.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       })),
     // Only show mock orders if we aren't in a specific restaurant view or for padding
-    ...(restaurantId ? [] : mockOrders)
+    ...(restaurantId ? [] : mockOrders.map(m => ({ ...m, orderNumber: m.id })))
   ];
 
   const filteredOrders = filter === "all" ? combinedOrders : combinedOrders.filter(o => o.status === filter);
 
   const handleStatusUpdate = (id: string, newStatus: OrderStatus) => {
-    // Find if it's a store order
-    const storeOrder = storeOrders.find(o => o.orderNumber.startsWith(id));
-    if (storeOrder) {
-      updateOrderStatus(storeOrder.id, newStatus as AdminOrderStatus);
+    // Update store order using UUID
+    const isStoreOrder = storeOrders.some(o => o.id === id);
+    if (isStoreOrder) {
+      updateOrderStatus(id, newStatus as AdminOrderStatus);
     }
   };
 
@@ -154,12 +162,12 @@ export default function AdminOrders() {
                        <config.icon className="w-7 h-7" />
                     </div>
                     <div>
-                       <div className="flex items-center gap-3 mb-1">
-                          <h3 className="font-heading text-xl font-bold text-slate-900">{order.id}</h3>
-                          <span className={cn("px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border", config.color)}>
-                            {config.label}
-                          </span>
-                       </div>
+                        <div className="flex items-center gap-3 mb-1">
+                           <h3 className="font-heading text-xl font-bold text-slate-900">{order.orderNumber || order.id}</h3>
+                           <span className={cn("px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border", config.color)}>
+                             {config.label}
+                           </span>
+                        </div>
                        <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400 font-medium">
                           <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" />{order.time}</span>
                           <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" />Table {order.table}</span>
@@ -183,32 +191,57 @@ export default function AdminOrders() {
                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">TotalAmount</p>
                        <p className="text-2xl font-heading font-bold text-primary">₹{order.total}</p>
                     </div>
-                    
-                    <div className="flex-1 lg:flex-none flex items-center gap-2">
-                       {order.status === "waiting" && (
-                         <Button 
-                            onClick={() => handleStatusUpdate(order.id, "preparing")}
-                            className="flex-1 lg:flex-none bg-blue-600 hover:bg-blue-700 rounded-xl font-bold shadow-lg shadow-blue-200"
-                         >
-                            Start Cooking
-                         </Button>
-                       )}
-                       {order.status === "preparing" && (
-                         <Button 
-                            onClick={() => handleStatusUpdate(order.id, "ready")}
-                            className="flex-1 lg:flex-none bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold shadow-lg shadow-emerald-200"
-                         >
-                            Mark Ready
-                         </Button>
-                       )}
-                       {order.status === "ready" && (
-                         <Button 
-                            onClick={() => handleStatusUpdate(order.id, "served")}
-                            className="flex-1 lg:flex-none bg-slate-800 hover:bg-slate-900 rounded-xl font-bold"
-                         >
-                            Mark Served
-                         </Button>
-                       )}
+                                        <div className="flex-1 lg:flex-none flex items-center gap-2">
+                        {order.status === "waiting" && (
+                          <Button 
+                             onClick={() => handleStatusUpdate(order.id, "confirmed")}
+                             className="flex-1 lg:flex-none bg-amber-600 hover:bg-amber-700 rounded-xl font-bold shadow-lg shadow-amber-200"
+                          >
+                             Confirm Order
+                          </Button>
+                        )}
+                        {order.status === "confirmed" && (
+                          <Button 
+                             onClick={() => handleStatusUpdate(order.id, "preparing")}
+                             className="flex-1 lg:flex-none bg-blue-600 hover:bg-blue-700 rounded-xl font-bold shadow-lg shadow-blue-200"
+                          >
+                             Start Cooking
+                          </Button>
+                        )}
+                        {order.status === "preparing" && (
+                          <Button 
+                             onClick={() => handleStatusUpdate(order.id, "ready")}
+                             className="flex-1 lg:flex-none bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold shadow-lg shadow-emerald-200"
+                          >
+                             Mark Ready
+                          </Button>
+                        )}
+                        {order.status === "ready" && (
+                          <Button 
+                             onClick={() => handleStatusUpdate(order.id, "served")}
+                             className="flex-1 lg:flex-none bg-slate-800 hover:bg-slate-900 rounded-xl font-bold"
+                          >
+                             Mark Served
+                          </Button>
+                        )}
+                        {order.status === "served" && (
+                          <Button 
+                             onClick={() => handleStatusUpdate(order.id, "completed")}
+                             className="flex-1 lg:flex-none bg-green-600 hover:bg-green-700 rounded-xl font-bold"
+                          >
+                             Complete
+                          </Button>
+                        )}
+                        
+                        {(order.status !== "completed" && order.status !== "cancelled") && (
+                           <Button 
+                              variant="ghost"
+                              onClick={() => handleStatusUpdate(order.id, "cancelled")}
+                              className="text-red-500 hover:bg-red-50 hover:text-red-600 font-bold rounded-xl"
+                           >
+                              Cancel
+                           </Button>
+                        )}
                        
                        <Button variant="ghost" size="icon" className="h-11 w-11 rounded-xl bg-slate-50 border border-slate-200 hover:bg-slate-100">
                           <MoreVertical className="w-5 h-5 text-slate-400" />

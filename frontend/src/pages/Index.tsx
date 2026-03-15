@@ -1,5 +1,6 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
   Clock,
@@ -13,6 +14,7 @@ import {
 } from "lucide-react";
 import { FloatingFoodHero } from "@/components/ui/hero-section-7";
 import { PopularDishesShowcase } from "@/components/menu/PopularDishesShowcase";
+import { useRestaurantStore } from "@/store";
 
 const features = [
   {
@@ -41,7 +43,7 @@ const features = [
   },
 ];
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
@@ -49,12 +51,18 @@ const staggerContainer = {
   },
 };
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 24 },
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
 
 export default function HomePage() {
+  const { fetchRestaurants } = useRestaurantStore();
+
+  useEffect(() => {
+    fetchRestaurants();
+  }, [fetchRestaurants]);
+
   return (
     <>
       {/* ── Hero Section ─────────────────────────────────────────────────── */}

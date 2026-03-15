@@ -9,7 +9,7 @@ export { useOrderStore } from './orderStore';
 export type { Order, OrderItem, OrderStatus } from './orderStore';
 
 export { useRestaurantStore } from './restaurantStore';
-export type { Restaurant } from './restaurantStore';
+export type { Restaurant, MenuItem } from './restaurantStore';
 
 export { useBookingStore } from './bookingStore';
 export type { Booking, BookingStatus } from './bookingStore';

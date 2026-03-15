@@ -158,23 +158,29 @@ export default function CheckoutPage() {
       price: item.price,
     }));
 
-    const processLocalOrder = () => {
+    const processLocalOrder = async () => {
       // Get restaurantId from the first item in cart (assuming one restaurant per cart)
       const cartRestaurantId = items[0]?.restaurantId || selectedRestaurant?.id;
 
-      const newOrder = createOrder(
+      const newOrder = await createOrder(
         orderItems,
         tableNumber,
         specialNotes,
         cartRestaurantId,
         selectedRestaurant?.name,
+        paymentMethod === 'cash' ? 'waiting' : 'confirmed'
       );
+
+      if (!newOrder) {
+        setIsProcessing(false);
+        return;
+      }
 
       clearCart();
 
       toast({
         title: "Order Placed Successfully! 🎉",
-        description: `Order ${newOrder.orderNumber} has been confirmed`,
+        description: `Order ${newOrder.orderNumber} has been confirmed via ${paymentMethod.toUpperCase()}`,
       });
 
       setIsProcessing(false);
@@ -182,118 +188,29 @@ export default function CheckoutPage() {
     };
 
     if (paymentMethod === "cash") {
-      processLocalOrder();
+      await processLocalOrder();
       return;
     }
 
+    // Simulated Payment for Card/UPI
     try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      const token = session?.access_token;
-
-      let sdkLoaded = !!(window as unknown as { Razorpay: unknown }).Razorpay;
-      if (!sdkLoaded) {
-        sdkLoaded = await new Promise<boolean>((resolve) => {
-          const script = document.createElement("script");
-          script.src = "https://checkout.razorpay.com/v1/checkout.js";
-          script.onload = () => resolve(true);
-          script.onerror = () => resolve(false);
-          document.body.appendChild(script);
-        });
-      }
-
-      if (!sdkLoaded) {
-        toast({
-          title: "Failed",
-          description: "Razorpay SDK failed to load.",
-          variant: "destructive",
-        });
-        setIsProcessing(false);
-        return;
-      }
-
-      const response = await fetch(
-        "http://localhost:3000/api/payment/create-order",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          },
-          body: JSON.stringify({
-            items: orderItems,
-            restaurantId: selectedRestaurant?.id,
-          }),
-        },
-      );
-      const orderData = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          orderData.error ||
-            "Failed to initiate payment. Ensure backend is running.",
-        );
-      }
-
-      const options = {
-        key: orderData.key || "rzp_test_placeholder",
-        amount: orderData.amount || Math.round((total + tax) * 100),
-        currency: orderData.currency || "INR",
-        name: "BiteBook Direct",
-        description: "Test Student Transaction",
-        order_id: orderData.id,
-        handler: function (response: { razorpay_payment_id: string }) {
-          toast({
-            title: "Payment Successful",
-            description: `Payment ID: ${response.razorpay_payment_id}`,
-          });
-          processLocalOrder();
-        },
-        prefill: {
-          name: "Test User",
-          email: "test@student.com",
-          contact: "9999999999",
-        },
-        theme: {
-          color: "#f97316",
-        },
-      };
-
-      interface RazorpayInstance {
-        on(
-          event: string,
-          handler: (res: { error: { description: string } }) => void,
-        ): void;
-        open(): void;
-      }
-      const RazorpayClient = (
-        window as unknown as {
-          Razorpay: new (opts: typeof options) => RazorpayInstance;
-        }
-      ).Razorpay;
-      const rzp = new RazorpayClient(options);
-      rzp.on(
-        "payment.failed",
-        function (response: { error: { description: string } }) {
-          toast({
-            title: "Payment Failed",
-            description: response.error.description,
-            variant: "destructive",
-          });
-          setIsProcessing(false);
-        },
-      );
-      rzp.open();
+      // Just a small delay to feel like a process is happening
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      toast({
+        title: "Payment Successful",
+        description: `Simulated ${paymentMethod.toUpperCase()} payment completed successfully.`,
+      });
+      
+      await processLocalOrder();
     } catch (err: unknown) {
       console.error(err);
       toast({
-        title: "Gateway Initialization Failed",
-        description:
-          err instanceof Error ? err.message : "Unknown error occurred",
+        title: "Payment Failed",
+        description: "Something went wrong during simulation.",
         variant: "destructive",
       });
-      processLocalOrder();
+      setIsProcessing(false);
     }
   };
 

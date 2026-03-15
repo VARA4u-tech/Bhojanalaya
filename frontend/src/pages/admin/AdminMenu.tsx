@@ -44,17 +44,22 @@ export default function AdminMenu() {
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   useEffect(() => {
-    if (restaurantId) {
-      const restaurantItems = getMenuItemsByRestaurant(restaurantId).map(item => ({
-        ...item,
-        category: item.category === 'main' ? 'Main Course' : 
-                  item.category === 'drinks' ? 'Beverages' : 'Desserts',
-        available: true
-      }));
-      setItems(restaurantItems as MenuItem[]);
-    } else {
+    async function fetchMenu() {
+      if (restaurantId) {
+        const rawItems = await getMenuItemsByRestaurant(restaurantId);
+        const mappedItems = rawItems.map(item => ({
+          ...item,
+          category: item.category === 'main' ? 'Main Course' : 
+                    item.category === 'drinks' ? 'Beverages' : 
+                    item.category === 'desserts' ? 'Desserts' : item.category,
+          available: true
+        }));
+        setItems(mappedItems as MenuItem[]);
+      } else {
         setItems(mockMenuItems as MenuItem[]);
+      }
     }
+    fetchMenu();
   }, [restaurantId, getMenuItemsByRestaurant]);
 
   const toggleAvailability = (id: number) => {

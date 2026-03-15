@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { useParams } from "react-router-dom";
@@ -60,9 +61,15 @@ const recentOrders = [
 export default function AdminOverview() {
   const { restaurantId } = useParams();
   const { getRestaurantById } = useRestaurantStore();
-  const { orders } = useOrderStore();
+  const { orders, fetchOrders, subscribeToOrders } = useOrderStore();
   
   const restaurant = restaurantId ? getRestaurantById(restaurantId) : null;
+
+  useEffect(() => {
+    fetchOrders();
+    const unsubscribe = subscribeToOrders();
+    return () => unsubscribe();
+  }, [fetchOrders, subscribeToOrders]);
 
   // Real-time calculations for this specific restaurant
   const restaurantOrders = orders.filter(o => o.restaurantId === restaurantId);

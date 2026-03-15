@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { 
@@ -13,7 +14,11 @@ import { useRestaurantStore } from "@/store/restaurantStore";
 import { Button } from "@/components/ui/button";
 
 export default function AdminRestaurantList() {
-  const { restaurants } = useRestaurantStore();
+  const { restaurants, fetchRestaurants } = useRestaurantStore();
+
+  useEffect(() => {
+    fetchRestaurants();
+  }, [fetchRestaurants]);
 
   return (
     <div className="space-y-10">

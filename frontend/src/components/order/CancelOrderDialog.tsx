@@ -44,17 +44,17 @@ export function CancelOrderDialog({
                     <div className="bg-muted rounded-lg p-4 space-y-2">
                         <div className="flex items-center justify-between text-sm">
                             <span className="text-muted-foreground">Order Total:</span>
-                            <span className="font-medium">${orderTotal.toFixed(2)}</span>
+                            <span className="font-medium">₹{orderTotal.toFixed(2)}</span>
                         </div>
                         <div className="flex items-center justify-between text-sm">
-                            <span className="text-muted-foreground">Refund Amount (50%):</span>
-                            <span className="font-bold text-primary">${refundAmount.toFixed(2)}</span>
+                            <span className="text-muted-foreground">Refund Amount (80%):</span>
+                            <span className="font-bold text-primary">₹{refundAmount.toFixed(2)}</span>
                         </div>
                     </div>
 
                     <div className="text-xs text-muted-foreground border-l-2 border-primary/50 pl-3">
                         <strong>Cancellation Policy:</strong> Orders can be cancelled before
-                        preparation begins. You'll receive a 50% refund of the order total.
+                        preparation begins. A 20% processing fee will be deducted, and you'll receive an 80% refund.
                     </div>
                 </div>
                 <AlertDialogFooter>

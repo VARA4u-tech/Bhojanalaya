@@ -45,7 +45,7 @@ export default function OrderStatusPage() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
 
-  const { orders, activeOrder, setActiveOrder, cancelOrder } = useOrderStore();
+  const { orders, activeOrder, setActiveOrder, updateOrderStatus } = useOrderStore();
   const { addBulkItems } = useCartStore();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -122,23 +122,17 @@ export default function OrderStatusPage() {
     }
   };
 
-  const handleCancelOrder = () => {
+  const handleCancelOrder = async () => {
     if (!displayOrder) return;
 
-    const success = cancelOrder(displayOrder.id);
-    if (success) {
-      toast({
-        title: "Order Cancelled",
-        description: `Refund of ₹${(displayOrder.total * 0.5).toFixed(2)} will be processed within 3-5 business days.`,
-      });
-      setCancelDialogOpen(false);
-    } else {
-      toast({
-        title: "Cannot Cancel Order",
-        description: "This order cannot be cancelled at its current status.",
-        variant: "destructive",
-      });
-    }
+    // Use a small delay for cancellation too
+    await updateOrderStatus(displayOrder.id, 'cancelled');
+
+    toast({
+      title: "Order Cancelled",
+      description: `Refund of ₹${(displayOrder.total * 0.8).toFixed(2)} (80% of total) will be processed within 3-5 business days.`,
+    });
+    setCancelDialogOpen(false);
   };
 
 
@@ -377,7 +371,7 @@ export default function OrderStatusPage() {
           onOpenChange={setCancelDialogOpen}
           onConfirm={handleCancelOrder}
           orderTotal={displayOrder?.total || 0}
-          refundAmount={(displayOrder?.total || 0) * 0.5}
+          refundAmount={(displayOrder?.total || 0) * 0.8}
         />
       </div>
     </>
