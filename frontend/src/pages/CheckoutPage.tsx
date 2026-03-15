@@ -5,6 +5,7 @@ import { useOrderStore, Order } from "@/store/orderStore";
 import { useRestaurantStore } from "@/store/restaurantStore";
 import { useUserStore } from "@/store/userStore";
 import { EmailPreviewDialog } from "@/components/order/EmailPreviewDialog";
+import emailjs from '@emailjs/browser';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -161,6 +162,32 @@ export default function CheckoutPage() {
       price: item.price,
     }));
 
+    const sendConfirmationEmail = async (order: Order) => {
+      if (!user?.email) return;
+
+      const templateParams = {
+        user_name: user.name || user.email.split('@')[0],
+        user_email: user.email,
+        order_number: order.orderNumber,
+        restaurant_name: selectedRestaurant?.name || 'BiteBook Restaurant',
+        total_amount: order.total,
+        table_number: order.tableNumber || 'Direct Order',
+        message: "Your order is being prepared with love!"
+      };
+
+      try {
+        await emailjs.send(
+          import.meta.env.VITE_EMAILJS_SERVICE_ID, 
+          import.meta.env.VITE_EMAILJS_TEMPLATE_ID, 
+          templateParams, 
+          import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+        );
+        console.log('Email sent successfully!');
+      } catch (error) {
+        console.error('Failed to send email:', error);
+      }
+    };
+
     const processLocalOrder = async () => {
       // Get restaurantId from the first item in cart (assuming one restaurant per cart)
       const cartRestaurantId = items[0]?.restaurantId || selectedRestaurant?.id;
@@ -183,8 +210,11 @@ export default function CheckoutPage() {
 
       toast({
         title: "Order Placed Successfully! 🎉",
-        description: `Order ${newOrder.orderNumber} has been confirmed via ${paymentMethod.toUpperCase()}`,
+        description: `Order ${newOrder.orderNumber} has been confirmed. Receipt sent to ${user?.email}`,
       });
+
+      // Send the real email in background
+      sendConfirmationEmail(newOrder);
 
       setLatestOrder(newOrder);
       setIsProcessing(false);
@@ -228,7 +258,7 @@ export default function CheckoutPage() {
     };
   }, []);
 
-  if (items.length === 0) {
+  if (items.length === 0 && !latestOrder) {
     return (
       <div className="container py-20 max-w-2xl px-4">
         <Card className="p-8 sm:p-12 text-center organic-card">

@@ -30,8 +30,8 @@ export function EmailPreviewDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-md p-0 overflow-hidden bg-slate-50 border-none shadow-2xl">
-                <DialogHeader className="bg-primary p-6 text-white">
+            <DialogContent className="max-w-md w-[95vw] p-0 overflow-hidden bg-slate-50 border-none shadow-2xl max-h-[90vh] flex flex-col">
+                <DialogHeader className="bg-primary p-4 sm:p-6 text-white shrink-0">
                     <div className="flex items-center gap-3 mb-2">
                         <div className="bg-white/20 p-2 rounded-lg">
                             <Mail className="w-5 h-5" />
@@ -43,7 +43,7 @@ export function EmailPreviewDialog({
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="p-6">
+                <div className="p-3 sm:p-6 overflow-y-auto custom-scrollbar">
                     {/* The "Email" Content */}
                     <motion.div 
                         initial={{ opacity: 0, y: 10 }}
@@ -51,19 +51,19 @@ export function EmailPreviewDialog({
                         className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden"
                     >
                         {/* Email Header */}
-                        <div className="bg-slate-900 p-6 text-center">
-                            <h2 className="text-2xl font-heading font-bold text-white mb-1">BiteBook <span className="text-primary">Direct</span></h2>
-                            <p className="text-slate-400 text-xs uppercase tracking-widest font-bold">Order Confirmation</p>
+                        <div className="bg-slate-900 p-4 sm:p-6 text-center">
+                            <h2 className="text-xl sm:text-2xl font-heading font-bold text-white mb-1">BiteBook <span className="text-primary">Direct</span></h2>
+                            <p className="text-slate-400 text-[10px] uppercase tracking-widest font-bold">Order Confirmation</p>
                         </div>
 
                         {/* Email Body */}
-                        <div className="p-6 space-y-6">
+                        <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
                             <div className="text-center">
-                                <div className="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                                    <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+                                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                    <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />
                                 </div>
-                                <h3 className="text-lg font-bold text-slate-900">Thanks for your order!</h3>
-                                <p className="text-slate-500 text-sm">We've received your order and the kitchen is getting started.</p>
+                                <h3 className="text-base sm:text-lg font-bold text-slate-900">Thanks for your order!</h3>
+                                <p className="text-slate-500 text-xs sm:text-sm">We've received your order and the kitchen is getting started.</p>
                             </div>
 
                             <div className="flex items-center justify-between py-3 border-y border-dashed border-slate-200">
@@ -121,13 +121,13 @@ export function EmailPreviewDialog({
                         </div>
 
                         {/* Email Footer */}
-                        <div className="p-6 bg-slate-50 border-t border-slate-100 text-center">
-                            <p className="text-xs text-slate-400 mb-4">This is an automated receipt for your student project simulation.</p>
+                        <div className="p-4 sm:p-6 bg-slate-50 border-t border-slate-100 text-center">
+                            <p className="text-[10px] sm:text-xs text-slate-400 mb-3 sm:mb-4">This is an automated receipt for your student project simulation.</p>
                             <div className="flex justify-center gap-4">
-                                <a href="#" className="text-slate-900 text-xs font-bold flex items-center gap-1 hover:text-primary transition-colors">
+                                <a href="#" className="text-slate-900 text-[10px] sm:text-xs font-bold flex items-center gap-1 hover:text-primary transition-colors">
                                     Help Center <ExternalLink className="w-3 h-3" />
                                 </a>
-                                <a href="#" className="text-slate-900 text-xs font-bold flex items-center gap-1 hover:text-primary transition-colors">
+                                <a href="#" className="text-slate-900 text-[10px] sm:text-xs font-bold flex items-center gap-1 hover:text-primary transition-colors">
                                     Privacy Policy <ExternalLink className="w-3 h-3" />
                                 </a>
                             </div>
