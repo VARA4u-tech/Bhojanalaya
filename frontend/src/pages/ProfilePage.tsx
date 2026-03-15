@@ -130,7 +130,7 @@ export default function ProfilePage() {
         {[
           {
             label: "Total Orders",
-            value: orders.length.toString(),
+            value: orders.filter(o => o.status !== 'cancelled').length.toString(),
             icon: ShoppingBag,
             color: "text-blue-500",
           },
@@ -249,7 +249,10 @@ export default function ProfilePage() {
                   />
                 </div>
               ) : (
-                orders.slice(0, 3).map((order) => (
+                orders
+                  .filter((order) => order.status !== "cancelled")
+                  .slice(0, 3)
+                  .map((order) => (
                   <motion.div
                     key={order.id}
                     layoutId={order.id}
