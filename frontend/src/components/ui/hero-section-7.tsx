@@ -628,11 +628,11 @@ export function FloatingFoodHero({
   const mouseX = useSpring(mousePosition.x, springConfig);
   const mouseY = useSpring(mousePosition.y, springConfig);
 
-  // On mobile: show only 2 items to drastically reduce DOM & paint cost
+  // On mobile: show 5 key items to balance look & performance
   const visibleItems = useMemo(
     () =>
       isMobile
-        ? [POSTER_ITEMS[0], POSTER_ITEMS[7]] // Just Pumpkin and Watermelon at corners
+        ? [POSTER_ITEMS[0], POSTER_ITEMS[1], POSTER_ITEMS[2], POSTER_ITEMS[7], POSTER_ITEMS[8]]
         : POSTER_ITEMS,
     [isMobile],
   );

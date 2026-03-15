@@ -92,21 +92,31 @@ export function LoginView() {
   const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
   const navigate = useNavigate();
   const { loginWithGoogle } = useUserStore();
+  const [isMobile, setIsMobile] = useState(false);
 
   React.useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
     document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = 'unset'; };
+    return () => { 
+      document.body.style.overflow = 'unset';
+      window.removeEventListener('resize', checkMobile);
+    };
   }, []);
+
+  const visibleItems = isMobile ? [POSTER_ITEMS[0], POSTER_ITEMS[2]] : POSTER_ITEMS;
 
   return (
     <div className="absolute inset-0 z-[45] flex items-center justify-center bg-[#d9ede1] p-4 sm:p-10 overflow-y-auto font-sans">
       
       {/* Frame - TOP LAYER - Neater Inset */}
-      <div className="fixed inset-2 sm:inset-5 lg:inset-8 rounded-[2rem] sm:rounded-[3rem] border-[4px] sm:border-[12px] border-primary/90 pointer-events-none z-[75]" />
+      <div className="fixed inset-2 sm:inset-5 lg:inset-8 rounded-[1.5rem] sm:rounded-[3rem] border-[3px] sm:border-[12px] border-primary/90 pointer-events-none z-[75]" />
 
       {/* Decorations - STYLED TOP LAYER */}
-      <div className="absolute inset-0 pointer-events-none z-[60] overflow-visible">
-        {POSTER_ITEMS.map((item, index) => (
+      <div className="absolute inset-0 pointer-events-none z-[60] overflow-hidden">
+        {visibleItems.map((item, index) => (
           <motion.div
             key={index}
             initial={{ opacity: 0, scale: 0.5 }}
@@ -115,8 +125,9 @@ export function LoginView() {
             className={cn("absolute", item.className)}
           >
             <motion.div
-              animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
+              animate={isMobile ? {} : { y: [0, -20, 0], rotate: [0, 5, 0] }}
               transition={{ duration: 7 + index, repeat: Infinity, ease: "easeInOut" }}
+              className={isMobile ? "" : "drop-shadow-xl"}
             >
                <item.Component />
             </motion.div>
